@@ -14,7 +14,7 @@ void insertion_sort(int A[],int n){
     }
 }
 int main(){
-    int A[] ={5,2,4,6,1,3,7};
+    int A[] ={5,2,4,6,1,3,7,8};
     int n = sizeof(A)/sizeof(A[0]); // 计算数组元素个数
     insertion_sort(A,n);
     for(int i=0;i<n;i++)

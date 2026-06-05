@@ -1,0 +1,1 @@
+.equ HEAP_SIZE,4096

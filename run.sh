@@ -1,2 +1,2 @@
-clang src/inserton_sort.c -g -o bin/inserton_sort
- ./bin/inserton_sort
+clang src/merge_sort.c -g -o bin/merge_sort
+ ./bin/merge_sort
