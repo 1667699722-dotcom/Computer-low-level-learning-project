@@ -3,6 +3,7 @@
 .extern heap_end    
 .global memory_init
 .global memory_alloc
+
 memory_init:
     adrp x0, heap@PAGE       ;拿到 heap 所在页的基地址
     add x0, x0, heap@PAGEOFF ;加上页内偏移，得到最终真实地址

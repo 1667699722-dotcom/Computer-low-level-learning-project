@@ -12,6 +12,7 @@ heap_end:              ;堆内存的结束位置
 .extern exit
 .extern memory_init
 .extern memory_alloc
+.extern memory_free
 
 _main:
     mov x3, #0 

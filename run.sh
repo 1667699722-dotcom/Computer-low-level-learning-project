@@ -1,2 +1,2 @@
-clang src/merge_sort.c -g -o bin/merge_sort
- ./bin/merge_sort
+clang src/findmaximumsubarray/1.c -g -o bin/findmaximumsubarray
+ ./bin/findmaximumsubarray
