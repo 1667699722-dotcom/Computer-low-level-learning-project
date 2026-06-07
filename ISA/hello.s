@@ -25,11 +25,12 @@ loop:
     ldr w5, =0x55667788
     str w4, [x0]
     str w5, [x0,#4]
+    bl memory_free
     add x3, x3, #1
     cmp x3, #2
     b.eq do_exit
     b loop  
-    
+ 
 do_exit:
     b exit
 
