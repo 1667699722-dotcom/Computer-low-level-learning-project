@@ -23,7 +23,7 @@ memory_alloc:
     add x21, x21, heap_end@PAGEOFF ;迅如heapend指针
 alloc_loop:
     cmp x20,x21    ;比较heap_i与heapend的大小
-    b.ge alloc_fail    ;如果heapi超过heapend就分配0字节
+    b.hs alloc_fail    ;如果heapi超过heapend就分配0字节
 
     ldr w22, [x20]    ;从heapi位置读取四个字节  
     ldr w23, [x20, #4]  ;从heapi+4位置读取四个字节  
@@ -58,4 +58,5 @@ alloc_fail:
 alloc_done:
     ldp x21, x22, [sp, #16]    ;退栈
     ldp x19, x20, [sp], #32   ;退栈
+alloc_done_flag:
     ret

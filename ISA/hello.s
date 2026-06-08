@@ -15,23 +15,49 @@ heap_end:              ;堆内存的结束位置
 .extern memory_free
 
 _main:
-    mov x3, #0 
+    sub sp,sp,#32
     bl memory_init
 
 loop:
+
     mov x0,#8
     bl memory_alloc
-    ldr w4, =0x11223344
-    ldr w5, =0x55667788
+    str x0,[sp,#0]
+    ldr w4, =0x11111111
+    ldr w5, =0x11111111
     str w4, [x0]
     str w5, [x0,#4]
+    
+    mov x0,#8
+    bl memory_alloc
+    str x0,[sp,#8]
+    ldr w4, =0x22222222
+    ldr w5, =0x22222222
+    str w4, [x0]
+    str w5, [x0,#4]
+
+    mov x0,#8
+    bl memory_alloc
+    str x0,[sp,#16]
+    ldr w4, =0x33333333
+    ldr w5, =0x33333333
+    str w4, [x0]
+    str w5, [x0,#4]
+
+    ldr x0,[sp,#16]
     bl memory_free
-    add x3, x3, #1
-    cmp x3, #2
-    b.eq do_exit
+    ldr x0,[sp,#8]
+    bl memory_free
+    ldr x0,[sp,#16]
+    bl memory_free
+
+    ;add x3, x3, #1
+    ;cmp x3, #2
+    ;b.eq do_exit
     b loop  
  
 do_exit:
+    sub sp,sp,#32
     b exit
 
     
