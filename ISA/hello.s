@@ -46,10 +46,12 @@ loop:
 
     ldr x0,[sp,#16]
     bl memory_free
+    str xzr, [sp,#16]
+    
     ldr x0,[sp,#8]
     bl memory_free
-    ldr x0,[sp,#16]
-    bl memory_free
+    str xzr, [sp,#8]
+
 
     ;add x3, x3, #1
     ;cmp x3, #2
