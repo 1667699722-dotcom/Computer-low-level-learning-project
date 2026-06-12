@@ -20,6 +20,7 @@ hello_len=.-hello_msg
 .global test_memory 
 .global test_read
 .global test_write_read
+.global test_write_memory
 
 test_read:
     stp x29, x30, [sp, #-16]!
@@ -36,6 +37,15 @@ test_write_read:
     mov x0,#1
     adrp x1,input_buf@PAGE
     add x1,x1,input_buf@PAGEOFF
+    mov x2,#256
+    bl sys_write
+    ldp x29, x30, [sp], #16
+    ret
+
+test_write_memory:
+    stp x29, x30, [sp, #-16]!
+    mov x1,x0
+    mov x0,#1
     mov x2,#256
     bl sys_write
     ldp x29, x30, [sp], #16
@@ -66,6 +76,7 @@ test_write:
 test_memory:
     stp x29, x30, [sp, #-16]!
     sub sp,sp,#32
+
     mov x0,#8
     bl memory_alloc
     str x0,[sp,#0]

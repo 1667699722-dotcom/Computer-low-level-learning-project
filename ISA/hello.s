@@ -12,6 +12,8 @@ heap:                  ;堆内存的开始位置
 heap_end:              ;堆内存的结束位置
 .global input_buf
 input_buf:.space 256
+.global output_buf
+output_buf:.space 256
 
 .text 
 .global _main
@@ -25,18 +27,20 @@ input_buf:.space 256
 .extern test_memory 
 .extern test_read
 .extern test_write_read
-
+.extern test_write_memory
 _main:
     bl memory_init 
     mov x19,#0
 
 loop:
     bl test_read
+    bl copy_string
+    bl test_write_memory
     bl test_write_read
-    bl test_write
-
+    ;bl test_write
+  
     add x19, x19, #1
-    cmp x19, #2
+    cmp x19, #1
     b.eq do_exit
     b loop  
  
