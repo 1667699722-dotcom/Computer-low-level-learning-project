@@ -33,7 +33,7 @@ output_buf:.space 256
 .extern get_string_len
 .extern store_ptr_done
 .extern print_index_strings
-
+.extern find_two_spaces
 _main:
     bl memory_init 
     mov x19,#0
@@ -42,8 +42,8 @@ loop:
     bl store_string
 
     mov x20,#0
-    bl print_string
-
+    bl get_string_ptr_len_spaces 
+    ;x0第一个空格位置 x1返回第二个空格位置 x2返回地址 x3返回长度
     ;bl test_write_memory
     ;bl test_write_read
     ;bl test_write
@@ -68,5 +68,15 @@ print_string:
     stp x29, x30, [sp, #-16]!
     mov x0,x20
     bl print_index_strings
+print_string_done_flag:
+    ldp x29, x30, [sp], #16
+    ret
+get_string_ptr_len_spaces:
+    stp x29, x30, [sp, #-16]!
+    bl print_string ;x1返回地址 x2返回长度
+    stp x1, x2, [sp, #-16]! 
+    bl find_two_spaces ;x0第一个空格位置 x1返回第二个空格位置 x2返回地址 x3返回长度
+    ldp x2, x3, [sp], #16  
+get_string_ptr_len_spaces_done:
     ldp x29, x30, [sp], #16
     ret
