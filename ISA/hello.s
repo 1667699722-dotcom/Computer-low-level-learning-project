@@ -28,15 +28,24 @@ output_buf:.space 256
 .extern test_read
 .extern test_write_read
 .extern test_write_memory
+.extern store_string_ptr_len
+.extern get_string_ptr
+.extern get_string_len
+.extern store_ptr_done
+.extern print_index_strings
+
 _main:
     bl memory_init 
     mov x19,#0
-
 loop:
-    bl test_read
-    bl copy_string
-    bl test_write_memory
-    bl test_write_read
+    mov x20,#0
+    bl store_string
+
+    mov x20,#0
+    bl print_string
+
+    ;bl test_write_memory
+    ;bl test_write_read
     ;bl test_write
   
     add x19, x19, #1
@@ -47,3 +56,17 @@ loop:
 do_exit:
     b exit
 
+store_string:
+    stp x29, x30, [sp, #-16]!
+    bl test_read
+    bl copy_string
+    mov x1,x20
+    bl store_string_ptr_len
+    ldp x29, x30, [sp], #16
+    ret
+print_string:
+    stp x29, x30, [sp, #-16]!
+    mov x0,x20
+    bl print_index_strings
+    ldp x29, x30, [sp], #16
+    ret
