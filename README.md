@@ -29,7 +29,8 @@
 408/
 ├── CUDA/        # CUDA 并行计算 / CUDA Parallel Computing
 ├── Chip/        # Verilog 芯片设计 / Verilog Chip Design
-├── ISA/         # ARM64 汇编系统编程（进行中）/ ARM64 Assembly System Programming (In Progress)
+├── ISA/         # ARM64 用户态汇编系统编程（进行中）/ ARM64 User-mode Assembly (In Progress)
+├── QEMU/        # QEMU 裸机 AArch64（进行中）/ QEMU Bare-metal AArch64 (In Progress)
 ├── src/         # C 语言算法与数据结构 / Algorithms & Data Structures in C
 ├── ctos/        # 其他 / Others
 └── bin/         # 编译后的二进制 / Compiled Binaries
@@ -47,29 +48,74 @@ System-level programming in ARM64 assembly on macOS, including memory management
 
 **已完成 / Completed:**
 
-- ✅ 堆结构定义与初始化 / Heap structure definition & init
-- ✅ 内存分配（带分割）/ Memory allocation (with splitting)
-- ✅ 内存释放（带相邻合并）/ Memory free (with coalescing)
-- ✅ Read/Write 系统调用封装 / Read/Write syscall wrappers
-- ✅ 字符/字符串 I/O / Character & string I/O
-- ✅ 模块化设计 / Modular design
-- 🔧 自定义指令解析（进行中）/ Custom instruction parser (In progress)
+- ✅ macOS 用户态基础：程序入口、主循环、条件跳转、系统调用、LLDB 调试、多文件拆分
+- ✅ 内存管理：堆结构、块头格式、分配（带分割）、释放（带前后合并）、边界检查
+- ✅ 系统调用与 I/O：write/read 封装、单字符/字符串读写、输入/输出缓冲区
+- ✅ 字符串运行时：堆字符串复制、平行指针/长度数组（string_ptrs / string_lens）、按序号存取、按序号打印
+- ✅ 解析器前端：`find_two_spaces` 扫描双空格位置、空格记录、失败路径
+
+**进行中 / In Progress:**
+
+- 🔧 Token 拆解与边界检查 / Token boundary parsing
+- 🔧 数字输出（print_uint/print_int）/ Decimal number output
+- 🔧 字符串转数字（atoi_scan）/ String to integer
+- 🔧 命令解析与执行 / Command parse & execute
+- 🔧 解释器主循环 / Interpreter main loop
 
 详细计划 / Detailed Schedule: [ISA/spec/schedule.md](ISA/spec/schedule.md)
 
 ***
 
-## 2. 芯片设计 (Chip/) / Chip Design (Chip/)
+## 2. QEMU 裸机 AArch64 (QEMU/) / QEMU Bare-metal AArch64 (QEMU/)
 
 **中文：**
-用 Verilog 实现简单硬件模块（加法器、UART 等），学习数字电路。
+在 QEMU 模拟的 virt 机器上运行裸机程序，学习裸机启动、UART 驱动、异常处理、内存管理、线程/进程调度等底层机制。
 
 **English:**
-Simple hardware modules in Verilog (adder, UART, etc.) for digital circuit learning.
+Bare-metal programming on QEMU-emulated virt machine, learning boot sequence, UART driver, exception handling, memory management, thread/process scheduling, etc.
+
+**已完成 / Completed:**
+
+- ✅ 工具链：clang + ld.lld 裸机编译、ELF 镜像生成、QEMU 参数配置
+- ✅ 启动层：`_start` 裸机入口、初始栈设置、PL011 UART MMIO 输出
+- ✅ 验证：能在 QEMU 中启动并输出字符串
+
+**进行中 / In Progress:**
+
+- 🔧 EL2 → EL1 异常级别切换 / EL2 to EL1 switch
+- 🔧 linker.ld 段布局 / Linker script & section layout
+- 🔧 BSS 清零与 kernel_main 跳转 / BSS zeroing & kernel_main
+- 🔧 UART 驱动完善（输入/输出完整）/ UART driver (full input/output)
+- 🔧 异常向量表与 IRQ 处理 / Exception vector table & IRQ
+
+**后续 / Next:**
+
+- 物理内存分配器 / Page allocator
+- 协作式内核线程 / Cooperative kernel threads
+- 定时器中断与抢占式调度 / Timer IRQ & preemptive scheduling
+- MMU 与虚拟内存 / MMU & virtual memory
+- 系统调用与进程 / Syscall & processes
+- virtio-net 网络栈 / virtio-net network stack
 
 ***
 
-## 3. 算法与数据结构 (src/) / Algorithms & Data Structures (src/)
+## 3. 芯片设计 (Chip/) / Chip Design (Chip/)
+
+**中文：**
+用 Verilog 实现简单硬件模块（加法器、UART 等），学习数字电路与自制 CPU。
+
+**English:**
+Simple hardware modules in Verilog (adder, UART, etc.) for digital circuit & custom CPU learning.
+
+**已完成 / Completed:**
+
+- ✅ 基础模块：加法器 / adder
+- ✅ UART 串口：接收、发送 / uart_rx, uart_tx
+- 🔧 自制 CPU 设计（进行中）/ Custom CPU design (In progress)
+
+***
+
+## 4. 算法与数据结构 (src/) / Algorithms & Data Structures (src/)
 
 **中文：**
 经典算法的 C 语言实现。
@@ -85,7 +131,7 @@ Classic algorithms implemented in C.
 
 ***
 
-## 4. CUDA 并行计算 (CUDA/) / CUDA Parallel Computing (CUDA/)
+## 5. CUDA 并行计算 (CUDA/) / CUDA Parallel Computing (CUDA/)
 
 **中文：**
 学习 CUDA 并行编程。
@@ -93,17 +139,6 @@ Classic algorithms implemented in C.
 **English:**
 Learning CUDA parallel programming.
 
-***
-
-## 快速开始 / Quick Start
-
-```bash
-# 汇编系统编程 / Assembly System Programming
-cd ISA && ./run.sh
-
-# 算法数据结构 / Algorithms & Data Structures
-./run.sh
-```
 
 ***
 
@@ -112,4 +147,6 @@ cd ISA && ./run.sh
 - [ARM64 指令集参考 / ARM64 ISA Reference](ISA/spec/ISA.md)
 - [开发进度计划 / Development Schedule](ISA/spec/schedule.md)
 - [芯片设计文档 / Chip Design Docs](Chip/design.md)
+- [QEMU 裸机启动代码 / QEMU Bare-metal Boot](QEMU/start.s)
+- [QEMU 编译运行脚本 / QEMU Build & Run Script](QEMU/run.sh)
 
