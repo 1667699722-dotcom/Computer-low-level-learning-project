@@ -1,0 +1,176 @@
+% ============================================================================
+% 底层学习笔记 —— 主文件
+% Low-Level Learning Notes - Main File
+% ============================================================================
+\documentclass[12pt,a4paper,openany,UTF8]{book}
+
+% ---- 中文支持 ----
+\usepackage{ctex}
+
+% ---- 排版基础 ----
+\usepackage[top=2.5cm,bottom=2.5cm,left=2.5cm,right=2.5cm]{geometry}
+\usepackage{setspace}
+\usepackage{indentfirst}
+\onehalfspacing
+
+% ---- 字体（Mac 环境）----
+% 保持默认字体，不强制指定字体以避免跨平台问题
+
+% ---- 超链接 ----
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan,
+    pdfborder={0 0 0},
+    pdftitle={底层学习笔记 - 芯片 · 系统 · 算法 · AI},
+    pdfauthor={Liuhuachao},
+}
+
+% ---- 代码高亮（listings，不需要外部依赖）----
+\usepackage{listings}
+\usepackage{xcolor}
+\lstset{
+    basicstyle=\ttfamily\footnotesize,
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    stepnumber=1,
+    numbersep=6pt,
+    backgroundcolor=\color{gray!5},
+    frame=single,
+    framesep=2pt,
+    rulecolor=\color{gray!30},
+    tabsize=4,
+    breaklines=true,
+    breakatwhitespace=false,
+    showstringspaces=false,
+    columns=flexible,
+    keepspaces=true,
+    language={[x86masm]Assembler},
+    commentstyle=\color{green!70!black},
+    keywordstyle=\color{blue!80!black},
+    stringstyle=\color{red!80!black},
+}
+
+% ---- 代码风格定义 ----
+\lstdefinestyle{asm}{
+    language={[x86masm]Assembler},
+    morekeywords={adrp,add,stp,ldp,str,ldr,ldrb,strb,mov,movz,movk,svc,bl,ret,
+        b,cbz,tbz,b.eq,b.ne,b.lt,b.ge,b.hs,b.le,cmp,sub,ands,b.lo,
+        bl,b.al,adr,orr,stur,ldur,stp,ldp,ldur,b.hi,b.lo,
+        .global,.extern,.section,.data,.text,.equ,.align,.space,.word,.asciz,
+        .include,.end},
+    numbers=left,
+    frame=single,
+    backgroundcolor=\color{gray!3},
+    captionpos=b,
+}
+
+\lstdefinestyle{verilog}{
+    language=Verilog,
+    morekeywords={module,endmodule,input,output,reg,wire,assign,always,posedge,
+        negedge,begin,end,case,endcase,if,else,parameter,localparam},
+    numbers=left,
+    frame=single,
+    backgroundcolor=\color{gray!3},
+    captionpos=b,
+}
+
+\lstdefinestyle{cstyle}{
+    language=C,
+    numbers=left,
+    frame=single,
+    backgroundcolor=\color{gray!3},
+    captionpos=b,
+}
+
+\lstdefinestyle{bashstyle}{
+    language=bash,
+    morekeywords={clang,ld.lld,qemu-system-aarch64,lldb,set,mkdir,cat,echo},
+    numbers=left,
+    frame=single,
+    backgroundcolor=\color{gray!3},
+    captionpos=b,
+}
+
+% ---- 图表 ----
+\usepackage{graphicx}
+\usepackage{booktabs}
+
+% ---- 数学 ----
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+% ---- 代码环境（更漂亮的章节标题）----
+\usepackage{titlesec}
+\titleformat{\chapter}[display]
+    {\bfseries\huge}{\chaptername\ \thechapter}{12pt}{}
+\titlespacing*{\chapter}{0pt}{-30pt}{30pt}
+
+% ---- 方便的行内代码标记 ----
+\newcommand{\code}[1]{\texttt{#1}}
+
+% ============================================================================
+% 标题信息
+% ============================================================================
+\title{底层学习笔记}
+\author{Liuhuachao \\
+\small \texttt{liuhuachaohaha@gmail.com}}
+\date{\today}
+
+% ============================================================================
+% Document
+% ============================================================================
+\begin{document}
+
+% ---- 封面 ----
+\thispagestyle{empty}
+\vspace*{\stretch{1}}
+\begin{center}
+    \rule{12cm}{0.4pt}\\[1cm]
+    {\Large\itshape Low-Level Learning Notes}\\[0.5cm]
+    {\Huge\bfseries 底层学习笔记}\\[1cm]
+    {\Large 芯片 · 系统 · 算法 · AI}\\[1cm]
+    \rule{8cm}{0.4pt}\\[2cm]
+    {\large Liuhuachao}\\[0.3cm]
+    {\small\ttfamily liuhuachaohaha@gmail.com}\\[0.5cm]
+    {\small\itshape \today}\\[1.5cm]
+    \rule{12cm}{0.4pt}
+\end{center}
+\vspace*{\stretch{2}}
+\clearpage
+
+% ---- 目录 ----
+\tableofcontents
+\thispagestyle{empty}
+\clearpage
+
+\setcounter{page}{1}
+
+% ============================================================================
+% 第 1 章：项目介绍
+% ============================================================================
+\input{intro/main}
+
+% ============================================================================
+% 第 2 章：用户态汇编
+% ============================================================================
+\input{isa/main}
+
+% ============================================================================
+% 第 3 章：QEMU 裸机 AArch64
+% ============================================================================
+\input{qemu/main}
+
+% ============================================================================
+% 第 4 章：Verilog 芯片设计
+% ============================================================================
+\input{chip/main}
+
+% ============================================================================
+% 第 5 章：C 语言算法与数据结构
+% ============================================================================
+\input{algo/main}
+
+\end{document}

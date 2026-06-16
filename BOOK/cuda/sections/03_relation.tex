@@ -1,0 +1,9 @@
+% 与其他模块的关系
+
+CUDA 提供了一个独特的视角：
+
+\begin{description}
+    \item[对比 ISA] CPU 上的汇编关心一条一条指令如何执行，GPU 上关心成千上万个线程如何协同工作
+    \item[对比 Chip] GPU 的底层硬件比自制 CPU 复杂得多，理解它有助于掌握真实硬件设计中的权衡
+    \item[对比 QEMU] CUDA 让你理解加速器这种设备模型，与 QEMU virtio 设备的思路类似：CPU 发命令给加速器，加速器独立完成后以中断或轮询方式通知 CPU
+\end{description}

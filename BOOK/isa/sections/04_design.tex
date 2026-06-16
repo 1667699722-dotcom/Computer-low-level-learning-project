@@ -1,0 +1,28 @@
+% 关键设计要点
+
+\subsection{平行数组（Parallel Arrays）}
+
+不把指针和长度放在同一个结构体里，而是用两个独立的数组按同一序号关联。
+
+\vspace{0.5em}
+
+\begin{verbatim}
+.data
+.align 4
+string_count: .word 0
+string_ptrs: .space MAX_STRINGS * 8   # 每个项 8 字节指针
+string_lens: .space MAX_STRINGS * 4   # 每个项 4 字节长度
+\end{verbatim}
+
+这样做的好处是读写简单、索引直接——只需要维护一个序号 index，
+就可以分别操作指针数组和长度数组。
+
+\subsection{汇编函数调用约定}
+
+所有函数遵循 AAPCS64：
+\begin{itemize}
+    \item 传入参数使用 x0 -- x7
+    \item x19 -- x28 是被调用者保存寄存器，函数内使用必须入栈
+    \item 返回值放在 x0
+    \item 栈操作使用 \texttt{stp/ldp} 成对，保持 16 字节对齐
+\end{itemize}

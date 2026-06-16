@@ -1,0 +1,138 @@
+\contentsline {chapter}{\numberline {1}项目介绍}{1}{chapter.1}%
+\contentsline {section}{\numberline {1.1}目录结构}{1}{section.1.1}%
+\contentsline {section}{\numberline {1.2}阅读顺序建议}{2}{section.1.2}%
+\contentsline {chapter}{\numberline {2}用户态 AArch64 汇编}{3}{chapter.2}%
+\contentsline {section}{\numberline {2.1}系统调用：最底层的 I/O}{3}{section.2.1}%
+\contentsline {subsection}{\numberline {2.1.1}为什么需要系统调用}{3}{subsection.2.1.1}%
+\contentsline {subsection}{\numberline {2.1.2}exit.s：三个系统调用的封装}{3}{subsection.2.1.2}%
+\contentsline {subsection}{\numberline {2.1.3}代码解读}{4}{subsection.2.1.3}%
+\contentsline {paragraph}{编号拼接：movz + movk}{4}{subsection.2.1.3}%
+\contentsline {paragraph}{参数传递}{4}{subsection.2.1.3}%
+\contentsline {paragraph}{svc \#0x80：真正的内核切换}{4}{lstnumber.2.2.5}%
+\contentsline {section}{\numberline {2.2}堆内存分配器}{4}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}设计思路}{4}{subsection.2.2.1}%
+\contentsline {subsection}{\numberline {2.2.2}heap 区的定义与初始化}{5}{subsection.2.2.2}%
+\contentsline {subsection}{\numberline {2.2.3}memory\_init：初始化堆}{6}{subsection.2.2.3}%
+\contentsline {paragraph}{地址计算的关键：adrp + add}{6}{lstnumber.2.5.15}%
+\contentsline {subsection}{\numberline {2.2.4}memory\_alloc：分配一块内存}{6}{subsection.2.2.4}%
+\contentsline {paragraph}{为什么要保护 x19--x22？}{8}{lstnumber.2.7.34}%
+\contentsline {subsection}{\numberline {2.2.5}memory\_free：释放内存并合并相邻空闲块}{8}{subsection.2.2.5}%
+\contentsline {subsection}{\numberline {2.2.6}测试内存分配器}{10}{subsection.2.2.6}%
+\contentsline {section}{\numberline {2.3}字符串复制：用户态的 strcpy}{11}{section.2.3}%
+\contentsline {subsection}{\numberline {2.3.1}copy\_string：从 input\_buf 复制到新分配的堆内存}{11}{subsection.2.3.1}%
+\contentsline {paragraph}{函数输入输出}{12}{lstnumber.2.11.38}%
+\contentsline {paragraph}{为什么要手动加 \texttt {wzr}？}{12}{lstnumber.2.11.38}%
+\contentsline {paragraph}{关于 \texttt {x19} 减 1 又加 1 的设计}{12}{lstnumber.2.11.38}%
+\contentsline {section}{\numberline {2.4}平行数组：字符串的索引存储}{12}{section.2.4}%
+\contentsline {subsection}{\numberline {2.4.1}为什么需要索引存储}{12}{subsection.2.4.1}%
+\contentsline {subsection}{\numberline {2.4.2}string\_array.s：数据区定义}{13}{subsection.2.4.2}%
+\contentsline {subsection}{\numberline {2.4.3}store\_string\_ptr\_len：写入一对指针和长度}{13}{subsection.2.4.3}%
+\contentsline {paragraph}{调用约定}{14}{lstnumber.2.13.30}%
+\contentsline {subsection}{\numberline {2.4.4}print\_index\_strings：按序号把字符串打印出来}{14}{subsection.2.4.4}%
+\contentsline {paragraph}{为什么用两个数组而不是一个结构体数组？}{15}{lstnumber.2.14.31}%
+\contentsline {section}{\numberline {2.5}命令解析：find\_two\_spaces}{15}{section.2.5}%
+\contentsline {subsection}{\numberline {2.5.1}把命令切成 token 的第一步}{15}{subsection.2.5.1}%
+\contentsline {subsection}{\numberline {2.5.2}find\_two\_spaces：单遍扫描找两个空格}{16}{subsection.2.5.2}%
+\contentsline {paragraph}{返回值约定}{17}{lstnumber.2.15.53}%
+\contentsline {paragraph}{注意 AArch64 下的寻址限制}{17}{lstnumber.2.15.53}%
+\contentsline {section}{\numberline {2.6}主程序：把一切串起来}{17}{section.2.6}%
+\contentsline {subsection}{\numberline {2.6.1}hello.s：主程序入口}{17}{subsection.2.6.1}%
+\contentsline {subsection}{\numberline {2.6.2}store\_string：读入并保存一行}{18}{subsection.2.6.2}%
+\contentsline {subsection}{\numberline {2.6.3}get\_string\_ptr\_len\_spaces：打印并解析空格}{19}{subsection.2.6.3}%
+\contentsline {subsection}{\numberline {2.6.4}理解整体数据流}{19}{subsection.2.6.4}%
+\contentsline {subsection}{\numberline {2.6.5}主循环限制}{19}{subsection.2.6.5}%
+\contentsline {section}{\numberline {2.7}编译与调试脚本}{19}{section.2.7}%
+\contentsline {subsection}{\numberline {2.7.1}clang：汇编成可执行文件}{19}{subsection.2.7.1}%
+\contentsline {subsection}{\numberline {2.7.2}为什么不用 ld 不用自己链接}{20}{subsection.2.7.2}%
+\contentsline {subsection}{\numberline {2.7.3}调试流程}{20}{subsection.2.7.3}%
+\contentsline {subsection}{\numberline {2.7.4}运行流程}{21}{subsection.2.7.4}%
+\contentsline {chapter}{\numberline {3}QEMU 裸机 AArch64}{22}{chapter.3}%
+\contentsline {section}{\numberline {3.1}start.s：最简裸机程序}{22}{section.3.1}%
+\contentsline {subsection}{\numberline {3.1.1}极简的裸机程序}{22}{subsection.3.1.1}%
+\contentsline {paragraph}{步骤 1：把两个关键地址取到寄存器}{23}{lstnumber.3.1.24}%
+\contentsline {paragraph}{步骤 2：逐字节打印}{23}{lstnumber.3.1.24}%
+\contentsline {paragraph}{步骤 3：停机}{23}{lstnumber.3.1.24}%
+\contentsline {subsection}{\numberline {3.1.2}和 ISA 章节的差异}{23}{subsection.3.1.2}%
+\contentsline {section}{\numberline {3.2}run.sh：交叉编译与启动脚本}{24}{section.3.2}%
+\contentsline {subsection}{\numberline {3.2.1}为什么需要三步式构建}{24}{subsection.3.2.1}%
+\contentsline {paragraph}{地址 0x4000\_0000 的来源}{25}{lstnumber.3.2.31}%
+\contentsline {paragraph}{退出 QEMU}{25}{lstnumber.3.2.31}%
+\contentsline {subsection}{\numberline {3.2.2}常见错误}{25}{subsection.3.2.2}%
+\contentsline {section}{\numberline {3.3}理解地址空间与 UART}{26}{section.3.3}%
+\contentsline {subsection}{\numberline {3.3.1}裸机地址空间的样子}{26}{subsection.3.3.1}%
+\contentsline {subsection}{\numberline {3.3.2}PL011 UART 的寄存器表（关键部分）}{26}{subsection.3.3.2}%
+\contentsline {paragraph}{读标志寄存器 — \texttt {ldr w3, [x0, \#0x18]}}{26}{subsection.3.3.2}%
+\contentsline {paragraph}{\texttt {tbnz w3, \#5, wait\_uart} — 忙等直到不忙}{26}{subsection.3.3.2}%
+\contentsline {paragraph}{\texttt {str w2, [x0]} — 发送字节}{27}{subsection.3.3.2}%
+\contentsline {subsection}{\numberline {3.3.3}如果要从用户键盘接收数据}{27}{subsection.3.3.3}%
+\contentsline {subsection}{\numberline {3.3.4}内存与硬件设备的区别}{27}{subsection.3.3.4}%
+\contentsline {chapter}{\numberline {4}Verilog 芯片设计}{28}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Verilog 基本概念}{28}{section.4.1}%
+\contentsline {subsection}{\numberline {4.1.1}软件和硬件的根本区别}{28}{subsection.4.1.1}%
+\contentsline {paragraph}{并行 vs 顺序}{28}{subsection.4.1.1}%
+\contentsline {paragraph}{两个基本类型}{28}{subsection.4.1.1}%
+\contentsline {subsection}{\numberline {4.1.2}同步逻辑：时钟驱动一切}{28}{subsection.4.1.2}%
+\contentsline {subsection}{\numberline {4.1.3}UART 通信的基本约定}{29}{subsection.4.1.3}%
+\contentsline {section}{\numberline {4.2}adder.v：64 位字节加法器}{29}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}设计目标}{29}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}源码与讲解}{29}{subsection.4.2.2}%
+\contentsline {paragraph}{位提取与掩码}{30}{lstnumber.4.1.32}%
+\contentsline {paragraph}{综合后会是什么样的硬件}{30}{lstnumber.4.1.32}%
+\contentsline {subsection}{\numberline {4.2.3}一个更简洁的写法}{30}{subsection.4.2.3}%
+\contentsline {section}{\numberline {4.3}uart\_tx.v：UART 发送器}{31}{section.4.3}%
+\contentsline {subsection}{\numberline {4.3.1}设计目标}{31}{subsection.4.3.1}%
+\contentsline {subsection}{\numberline {4.3.2}状态机设计}{31}{subsection.4.3.2}%
+\contentsline {subsection}{\numberline {4.3.3}源码与讲解}{31}{subsection.4.3.3}%
+\contentsline {paragraph}{锁存为什么重要}{34}{lstnumber.-5.15}%
+\contentsline {paragraph}{为什么 UART 空闲时 tx\_pin 必须为高}{34}{lstnumber.-5.15}%
+\contentsline {section}{\numberline {4.4}uart\_rx.v：UART 接收器}{34}{section.4.4}%
+\contentsline {subsection}{\numberline {4.4.1}设计目标}{34}{subsection.4.4.1}%
+\contentsline {subsection}{\numberline {4.4.2}状态机设计}{35}{subsection.4.4.2}%
+\contentsline {subsection}{\numberline {4.4.3}源码与关键思路讲解}{35}{subsection.4.4.3}%
+\contentsline {paragraph}{打两拍：跨时钟域的基本操作}{36}{lstnumber.4.4.29}%
+\contentsline {paragraph}{状态转移逻辑：使用两个 always 块}{36}{lstnumber.-6.15}%
+\contentsline {paragraph}{为什么在 S\_STOP 里只等半位}{37}{lstnumber.-7.42}%
+\contentsline {paragraph}{数据与有效标志}{37}{lstnumber.-7.42}%
+\contentsline {paragraph}{逐位接收}{37}{lstnumber.-8.17}%
+\contentsline {paragraph}{中心采样的重要性}{38}{lstnumber.-9.20}%
+\contentsline {section}{\numberline {4.5}综合到 FPGA：从代码到硬件}{38}{section.4.5}%
+\contentsline {subsection}{\numberline {4.5.1}从 Verilog 到真实硬件的流程}{38}{subsection.4.5.1}%
+\contentsline {subsection}{\numberline {4.5.2}u\_lite 程序如何加载到 FPGA 的指令存储器}{39}{subsection.4.5.2}%
+\contentsline {paragraph}{方式 1：利用 Block RAM 初始化}{39}{subsection.4.5.2}%
+\contentsline {paragraph}{方式 2：通过 UART bootloader}{39}{lstnumber.4.5.12}%
+\contentsline {subsection}{\numberline {4.5.3}和 QEMU 模拟的对应关系}{39}{subsection.4.5.3}%
+\contentsline {subsection}{\numberline {4.5.4}为什么要做这种事}{40}{subsection.4.5.4}%
+\contentsline {chapter}{\numberline {5}C 语言算法与数据结构}{41}{chapter.5}%
+\contentsline {section}{\numberline {5.1}本章讲什么}{41}{section.5.1}%
+\contentsline {section}{\numberline {5.2}插入排序 — 逐个插入}{41}{section.5.2}%
+\contentsline {subsection}{\numberline {5.2.1}核心思路}{41}{subsection.5.2.1}%
+\contentsline {subsection}{\numberline {5.2.2}时间复杂度}{42}{subsection.5.2.2}%
+\contentsline {subsection}{\numberline {5.2.3}C 代码}{42}{subsection.5.2.3}%
+\contentsline {subsection}{\numberline {5.2.4}代码解读}{42}{subsection.5.2.4}%
+\contentsline {section}{\numberline {5.3}归并排序 — 分治 + 逆序对}{43}{section.5.3}%
+\contentsline {subsection}{\numberline {5.3.1}核心思路}{43}{subsection.5.3.1}%
+\contentsline {subsection}{\numberline {5.3.2}时间复杂度}{43}{subsection.5.3.2}%
+\contentsline {subsection}{\numberline {5.3.3}C 代码 — 合并函数}{44}{subsection.5.3.3}%
+\contentsline {subsection}{\numberline {5.3.4}C 代码 — 递归排序函数与主程序}{45}{subsection.5.3.4}%
+\contentsline {subsection}{\numberline {5.3.5}编译与运行}{45}{subsection.5.3.5}%
+\contentsline {section}{\numberline {5.4}最大子数组 — 从暴力到分治}{46}{section.5.4}%
+\contentsline {subsection}{\numberline {5.4.1}解法一：暴力枚举所有可能的子数组}{46}{subsection.5.4.1}%
+\contentsline {subsection}{\numberline {5.4.2}解法二：分治法}{47}{subsection.5.4.2}%
+\contentsline {subsubsection}{跨中点的最大子数组 — \texttt {findmaxcrossingsubarray}}{47}{Item.27}%
+\contentsline {subsubsection}{主递归函数}{49}{lstnumber.5.5.35}%
+\contentsline {subsubsection}{输入预处理和输出结果}{49}{lstnumber.5.6.26}%
+\contentsline {subsection}{\numberline {5.4.3}时间复杂度对比}{50}{subsection.5.4.3}%
+\contentsline {section}{\numberline {5.5}矩阵乘法 — 二维分治}{50}{section.5.5}%
+\contentsline {subsection}{\numberline {5.5.1}数据结构}{50}{subsection.5.5.1}%
+\contentsline {subsection}{\numberline {5.5.2}C 代码 — 创建、释放、打印矩阵}{50}{subsection.5.5.2}%
+\contentsline {subsection}{\numberline {5.5.3}C 代码 — 补零到 2 的幂次方}{51}{subsection.5.5.3}%
+\contentsline {subsection}{\numberline {5.5.4}C 代码 — 拆分、合并与矩阵加法}{52}{subsection.5.5.4}%
+\contentsline {subsection}{\numberline {5.5.5}C 代码 — 递归乘法主体}{54}{subsection.5.5.5}%
+\contentsline {subsection}{\numberline {5.5.6}C 代码 — 主程序验证}{55}{subsection.5.5.6}%
+\contentsline {subsection}{\numberline {5.5.7}从底层视角看矩阵乘法}{56}{subsection.5.5.7}%
+\contentsline {section}{\numberline {5.6}从 C 代码到汇编 — 底层视角}{56}{section.5.6}%
+\contentsline {subsection}{\numberline {5.6.1}函数调用 vs 栈操作}{57}{subsection.5.6.1}%
+\contentsline {subsection}{\numberline {5.6.2}数组与指针 vs [base, index, shift]}{57}{subsection.5.6.2}%
+\contentsline {subsection}{\numberline {5.6.3}结构体与内存对齐}{57}{subsection.5.6.3}%
+\contentsline {subsection}{\numberline {5.6.4}从算法到硬件的路径}{57}{subsection.5.6.4}%
+\contentsline {subsubsection}{下一步可以做的事}{58}{subsection.5.6.4}%

@@ -1,0 +1,20 @@
+% FPGA 加载方式
+
+汇编程序需要先变成机器码，再加载到指令存储器中。
+目前计划使用 BRAM 初始化的方式：
+
+\begin{enumerate}
+    \item 汇编程序经 clang/ld.lld 生成 ELF，再转成纯二进制
+    \item 二进制转为 coe/mem 文件，每一行一条指令的十六进制
+    \item 在 Verilog 中用 \texttt{\$readmemh} 或 Vivado IP 核将机器码填进 BRAM
+    \item FPGA 上电后，CPU 从 IMEM 的地址 0 开始取指执行
+\end{enumerate}
+
+关键代码片段：
+
+\begin{verbatim}
+reg [31:0] instr_mem [0:1023];
+initial begin
+    $readmemh("code.mem", instr_mem);
+end
+\end{verbatim}

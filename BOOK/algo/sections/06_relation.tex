@@ -1,0 +1,63 @@
+写 C 代码对理解汇编编程有直接帮助，反过来也是一样。
+这一节做三个连接。
+
+\subsection{函数调用 vs 栈操作}
+
+C 里写一个递归函数（比如 \texttt{Mergesort}），编译器背后做的事是：
+
+\begin{lstlisting}[style=asm]
+bl  Mergesort                // 保存返回地址到 x30，然后跳转
+...                          // 递归展开时，每次都压栈保存 x29/x30
+\end{lstlisting}
+
+理解了 C 函数的\textbf{调用约定}（calling convention），
+汇编里写 \texttt{stp x29, x30, [sp, \#-16]!} 的保存动作就很自然——
+每一次 \texttt{bl} 都会覆盖 \texttt{x30}，所以递归前必须把它存进栈。
+
+\subsection{数组与指针 vs [base, index, shift]}
+
+C 里写 \texttt{A[i] = B[j]}，其实就是：
+\begin{lstlisting}[style=asm]
+// A[i] 对应 基地址 + i * sizeof(元素)
+// 汇编里就是 [x0, x1, lsl \#2]  （元素 4 字节）
+// 这就是指针算术的本质
+\end{lstlisting}
+
+理解这一点后，再看第 2 章里写的
+\texttt{string\_ptrs[i]} 和 \texttt{string\_lens[i]}，
+就不会觉得是魔法了——只是把指针当作索引值，加上偏移。
+
+\subsection{结构体与内存对齐}
+
+矩阵乘法里定义了 \texttt{SplitMat} 这样的结构体，
+它包含四个 \texttt{Matrix} 类型的子矩阵指针。
+每个结构体成员在内存中的偏移取决于它的大小和编译器对对齐的要求。
+这与 Verilog 芯片里寄存器地址排布的思路是一致的——
+一切数据最终都落到「地址 + 大小」这两件事上。
+
+\subsection{从算法到硬件的路径}
+
+现在你在项目中走过了一条完整的链路：
+
+\begin{center}
+\begin{tabular}{lll}
+层面 & 你写的代码 & 关注点 \\
+C 算法 & \texttt{src/sort/*.c} 等 & 时间复杂度、分治 \\
+用户态汇编 & \texttt{ISA/hello.s} & 寄存器、栈、系统调用 \\
+裸机汇编 & \texttt{QEMU/start.s} & 无 OS、UART 串口 \\
+Verilog & \texttt{Chip/src/*.v} & 时钟、状态机、寄存器 \\
+\end{tabular}
+\end{center}
+
+从算法出发，你可以反过来问：
+「这个 \(O(n^2)\) 的循环如果变成硬件电路，它的流水线会是什么样？」
+「这一次内存访问要走几个时钟周期？」——这类问题让算法和硬件设计自然地连通。
+
+\subsubsection{下一步可以做的事}
+
+\begin{itemize}
+    \item 用 LLDB 观察 \texttt{Mergesort} 递归调用时栈的变化
+    \item 把 \texttt{heapsort.c} 实现出来（当前文件还是空的）
+    \item 写一个最小的 C 标准库子集（\texttt{string.h / stdlib.h}）
+    \item 为矩阵乘法加入性能计时，对比朴素三重循环、ikj 循环、分治法的实际速度
+\end{itemize}

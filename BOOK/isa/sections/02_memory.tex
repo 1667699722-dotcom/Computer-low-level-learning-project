@@ -1,0 +1,330 @@
+% ============================================================================
+% 2.2 堆内存分配器
+% ============================================================================
+\subsection{设计思路}
+
+我们需要一个比 \texttt{.space} 伪指令更灵活的内存分配方式——
+可以按需分配、用完释放、释放的空间再利用。
+
+我们的实现是一个简化版的 K\&R 风格分配器：
+
+\begin{enumerate}
+    \item 在数据段预留一块 4096 字节的连续内存作为堆
+    \item 每个内存块有一个 8 字节的头：前 4 字节存大小，后 4 字节存是否在用
+    \item 分配时从堆头开始扫描，找第一个足够大的空闲块
+    \item 释放时把块标记为空闲，并与左右相邻空闲块合并（coalescing）
+\end{enumerate}
+
+一个块的内存布局：
+
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+size（4 字节） & used（4 字节） & 实际数据区（size 字节） \\
+\hline
+\multicolumn{2}{|c|}{8 字节头} & \\
+\hline
+\end{tabular}
+\end{center}
+
+整个堆的结构（假设分配了两块，中间一块空闲）：
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+size 20 & used 1 & data 20B & size 100 & used 0 & data 100B（空闲） & data 40B \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{heap 区的定义与初始化}
+
+在 \texttt{hello.s} 的 \texttt{.data} 段里，我们这样定义堆：
+
+\begin{lstlisting}[style=asm,caption=hello.s 中的 heap 定义]
+.include "src/memory.inc"    ; 定义 HEAP_SIZE = 4096
+.data
+.align 4
+
+.global heap
+.global heap_end
+
+heap:                      ; 堆内存的开始位置
+    .space HEAP_SIZE       ; 开辟一块长度为 4096 字节的内存空间
+heap_end:                  ; 堆内存的结束位置
+\end{lstlisting}
+
+这里的 \texttt{.space} 是汇编器的伪指令：它在目标文件里预留空间，
+不产生任何机器码。运行时这就是进程虚拟地址空间中的一块内存。
+
+注意我们还定义了两个缓冲区：
+
+\begin{lstlisting}[style=asm,caption=hello.s 中的 I/O 缓冲区]
+.global input_buf
+input_buf: .space 256       ; 存放键盘读入的内容
+
+.global output_buf
+output_buf: .space 256      ; 存放准备输出的内容
+\end{lstlisting}
+
+这两块 256 字节的内存，分别对应命令行输入和程序输出。
+
+\subsection{memory\_init：初始化堆}
+
+分配器初始化只做一件事：在堆的第一个 8 字节头部填入整个堆的大小和"空闲"标记。
+
+\begin{lstlisting}[style=asm,caption=memory.s — memory\_init]
+.include "src/memory.inc"
+.extern heap
+.extern heap_end
+.global memory_init
+.global memory_alloc
+
+memory_init:
+    adrp x0, heap@PAGE           ; 拿到 heap 所在页的基地址
+    add  x0, x0, heap@PAGEOFF    ; 加页内偏移，得到 heap 真正的虚拟地址
+    mov  x1, #HEAP_SIZE          ; x1 = 堆总大小 = 4096
+    sub  x1, x1, #8              ; x1 = 可用空间 = 4096 - 8 = 4088
+    str  w1, [x0]                ; 把可用大小写入 head 的第一个字（size 字段）
+    mov  w2, #0
+    str  w2, [x0, #4]            ; 第二字（used 字段）写 0，表示空闲
+    ret
+\end{lstlisting}
+
+执行完 \texttt{memory\_init}，堆的状态：
+
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+4088 & 0 & (未初始化，4088 字节空闲) \\
+\hline
+\multicolumn{2}{|c|}{第一个块的头部} & \\
+\hline
+\end{tabular}
+\end{center}
+
+\paragraph{地址计算的关键：adrp + add}
+ARM 64 位下不能用一条指令直接写一个 64 位绝对地址。
+\texttt{adrp} 把 \texttt{heap} 所在的 4 KB 页的基地址写入 \texttt{x0}，
+然后 \texttt{add} 再加上页内偏移——两步合起来就得到了真正的虚拟地址。
+这是位置无关代码（PIC）的标准做法。
+
+\subsection{memory\_alloc：分配一块内存}
+
+这是分配器的核心。它的思路是顺序扫描（first-fit）：
+
+\begin{lstlisting}[style=asm,caption=memory.s — memory\_alloc（第一部分：扫描循环）]
+memory_alloc:
+    ; 入栈保护：保存 x19-x22（调用者保存寄存器）
+    stp x19, x20, [sp, #-32]!
+    stp x21, x22, [sp, #16]
+    mov x19, x0                   ; x19 = 申请的大小
+    adrp x20, heap@PAGE
+    add  x20, x20, heap@PAGEOFF   ; x20 = 扫描指针（从 heap 头部开始）
+    adrp x21, heap_end@PAGE
+    add  x21, x21, heap_end@PAGEOFF
+
+alloc_loop:
+    cmp  x20, x21                 ; 超过堆尾？
+    b.hs alloc_fail               ; 是 → 失败
+
+    ldr  w22, [x20]               ; 读当前块的 size
+    ldr  w23, [x20, #4]           ; 读当前块的 used 标记
+
+    cmp  w23, #1                  ; 当前块在用吗？
+    b.eq next_block               ; 是 → 跳过
+    cmp  w22, w19                 ; 当前块大小 >= 需要的大小？
+    b.lt next_block               ; 不够 → 跳过
+\end{lstlisting}
+
+一旦找到一块合适的空闲块，我们需要决定是否把它\textbf{切割}成两块——
+一块分配出去，剩下的留作新的空闲块。只有剩余空间足够容纳
+一个头部（8 字节）+ 至少 1 字节数据时才有切割的意义。
+
+\begin{lstlisting}[style=asm,caption=memory.s — memory\_alloc（第二部分：分配与切割）]
+    ; 找到了：先标记为已用
+    mov  w0, #1
+    str  w0, [x20, #4]            ; used = 1
+
+    sub  x1, x22, x19             ; x1 = 剩余 = 当前块大小 - 要分配的大小
+    cmp  x1, #8                   ; 剩余小于 8 字节？
+    b.le no_split                 ; 是 → 不切割，整块都分配
+
+    ; 切割：在剩余位置写入一个新空闲块的头部
+    add  x2, x20, #8
+    add  x2, x2, x19              ; x2 = 新块头部 = 当前块头 + 8 + 分配大小
+    sub  x3, x1, #8               ; x3 = 新块可用字节 = 剩余 - 8 (新块头)
+    str  w3, [x2]                 ; 新块 size = x3
+    mov  w4, #0
+    str  w4, [x2, #4]             ; 新块 used = 0（空闲）
+
+    str  w19, [x20]               ; 更新当前块 size = 申请的大小
+
+no_split:
+    add  x0, x20, #8              ; 返回值 = 数据区首地址（头 + 8）
+    b    alloc_done
+
+next_block:
+    add  x20, x20, #8             ; 跳过头部
+    add  x20, x20, x22            ; 跳过数据区，x20 指向了下一个块
+    b    alloc_loop
+
+alloc_fail:
+    mov  x0, #0                   ; 返回 0（NULL），表示分配失败
+
+alloc_done:
+    ldp  x21, x22, [sp, #16]
+    ldp  x19, x20, [sp], #32      ; 恢复寄存器，同时释放栈帧
+    ret
+\end{lstlisting}
+
+\paragraph{为什么要保护 x19--x22？}
+AArch64 的调用约定（AAPCS64）把寄存器分成两组：
+\begin{itemize}
+    \item \textbf{临时寄存器} \texttt{x0--x18}：函数可以随便用，
+        用完不需要恢复。调用者如果还要用，必须自己保存。
+    \item \textbf{被调用者保存寄存器} \texttt{x19--x28}：
+        函数如果要用它们，必须在函数返回前恢复原值。
+\end{itemize}
+
+\texttt{memory\_alloc} 用了 \texttt{x19--x22} 来保存扫描指针和大小，
+所以进入函数时先把它们压栈，退出前恢复。这是标准的函数序言/尾声。
+
+\subsection{memory\_free：释放内存并合并相邻空闲块}
+
+释放的逻辑是：把块标记为空闲，然后检查左右邻居是否也是空闲，
+如果是就把它们合并成一块（否则堆会被切成越来越碎的小块）。
+
+\begin{lstlisting}[style=asm,caption=memoryfree.s — memory\_free]
+.include "src/memory.inc"
+.extern heap
+.extern heap_end
+.global memory_free
+
+memory_free:
+    stp x19, x20, [sp, #-96]!
+    stp x21, x22, [sp, #16]
+    stp x23, x24, [sp, #32]
+    stp x25, x26, [sp, #48]
+    stp x27, x28, [sp, #64]
+    stp x29, x30, [sp, #80]
+
+    ; 第一步：标记当前块为空闲
+    cbz x0, free_done             ; NULL 指针直接返回
+    sub x19, x0, #8               ; x19 = 当前块头部
+    mov w1, #0
+    str w1, [x19, #4]             ; used = 0
+
+    ; 准备扫描指针，向前一块找
+    adrp x20, heap@PAGE
+    add  x20, x20, heap@PAGEOFF
+    adrp x21, heap_end@PAGE
+    add  x21, x21, heap_end@PAGEOFF
+    mov  x22, x20
+    mov  x23, #0
+
+find_prev_loop:
+    cmp x22, x19                  ; 扫描到了当前块位置？
+    b.hs check_prev               ; 是 → 跳出循环，此时 x23 就是前一块
+    cmp x22, x21                  ; 超过堆尾？
+    b.hs check_prev
+    mov x23, x22                  ; 记录"上一块"的位置
+    ldr w24, [x22]
+    add x22, x22, #8
+    add x22, x22, x24             ; 跳到下一个块的头
+    b find_prev_loop
+\end{lstlisting}
+
+循环结束后，\texttt{x23} 里存的是前一块的地址（如果当前块是第一个块，
+\texttt{x23} 保持为 0）。接下来检查前后两个邻居：
+
+\begin{lstlisting}[style=asm,caption=memoryfree.s — 合并相邻块]
+check_prev:
+    cbz x23, check_next           ; 没有前一块 → 跳过
+    ldr w25, [x23, #4]
+    cmp w25, #0                   ; 前一块是空闲吗？
+    b.ne check_next               ; 不空闲 → 跳过
+    ; 合并前一块：把前一块的 size 扩大，把当前块吃掉
+    ldr w24, [x23]                ; 前一块 size
+    ldr w26, [x19]                ; 当前块 size
+    add w24, w24, w26
+    add w24, w24, #8              ; +8 吃掉当前块头部
+    str w24, [x23]                ; 写回前一块的 size
+    mov x19, x23                  ; 现在"当前块"就是合并后的那块
+
+check_next:
+    ldr w26, [x19]
+    add x27, x19, #8
+    add x27, x27, w26             ; x27 = 当前块后面那一块的头
+    cmp x27, x21                  ; 后一块超过堆尾？
+    b.hs free_done                ; 是 → 没东西合并
+
+    ldr w28, [x27, #4]
+    cmp w28, #0                   ; 后一块空闲吗？
+    b.ne free_done
+    ; 合并后一块：把后一块的 size 加到当前块
+    ldr w29, [x27]
+    add w26, w26, w29
+    add w26, w26, #8
+    str w26, [x19]
+
+free_done:
+    ; 恢复所有保存过的寄存器（与进入时的 stp 顺序相反）
+    ldp x29, x30, [sp, #80]
+    ldp x27, x28, [sp, #64]
+    ldp x25, x26, [sp, #48]
+    ldp x23, x24, [sp, #32]
+    ldp x21, x22, [sp, #16]
+    ldp x19, x20, [sp], #96
+    ret
+\end{lstlisting}
+
+释放一个块时，最多可能合并三块（前一块 + 当前块 + 后一块）。
+正因为我们扫描的方式——从堆头一路数块大小、逐个跳过——才能正确找到
+"当前块的前一块"的头部位置。
+
+\subsection{测试内存分配器}
+
+\texttt{test.s} 里有一个专门测试内存系统的函数：
+
+\begin{lstlisting}[style=asm,caption=test.s — test\_memory]
+test_memory:
+    stp x29, x30, [sp, #-16]!
+    sub sp, sp, #32               ; 留出 32 字节栈空间存指针
+
+    mov x0, #8
+    bl memory_alloc               ; 第一次分配 8 字节
+    str x0, [sp, #0]              ; 存返回的指针到栈上
+    ldr w4, =0x11111111
+    ldr w5, =0x11111111
+    str w4, [x0]                  ; 写入测试数据
+    str w5, [x0, #4]
+
+    mov x0, #8
+    bl memory_alloc               ; 第二次分配（验证切割是否正常）
+    str x0, [sp, #8]
+    ldr w4, =0x22222222
+    ...
+
+    mov x0, #8
+    bl memory_alloc               ; 第三次分配
+    str x0, [sp, #16]
+    ldr w4, =0x33333333
+    ...
+
+    ldr x0, [sp, #16]
+    bl memory_free                ; 先释放第三块
+    str xzr, [sp, #16]
+
+    ldr x0, [sp, #8]
+    bl memory_free                ; 再释放第二块（触发与第三块合并）
+    str xzr, [sp, #8]
+
+    add sp, sp, #32
+    ldp x29, x30, [sp], #16
+    ret
+\end{lstlisting}
+
+这个测试的意义是：如果分配、切割、释放、合并这四个步骤都正确工作，
+堆里的状态就会经历"三块在用"→"第一块在用，后两块释放并合并"的过程。
+后续再分配一个大请求时，就会从合并后的大块里切分——这正是分配器的正常工作方式。

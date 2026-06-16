@@ -1,0 +1,16 @@
+% 调试工具链
+
+编译运行流程：
+
+\begin{verbatim}
+clang -g -o bin/hello hello.s src/*.s -nostdlib -lSystem
+lldb ./bin/hello
+\end{verbatim}
+
+常用 LLDB 命令：
+\begin{itemize}
+    \item \texttt{register read} —— 查看所有寄存器
+    \item \texttt{x/Ngx address} —— 查看 N 个 8 字节内存单元
+    \item \texttt{b function\_name} —— 设置断点
+    \item \texttt{si / s} —— 单步汇编 / 源码步进
+\end{itemize}

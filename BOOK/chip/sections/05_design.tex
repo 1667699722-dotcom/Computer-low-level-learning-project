@@ -1,0 +1,11 @@
+% 设计要点
+
+以下是设计过程中需要注意的关键点：
+
+\begin{itemize}
+    \item \textbf{时钟域}：所有寄存器都在同一个时钟沿更新，避免出现多时钟或未锁存的组合逻辑环路
+    \item \textbf{复位}：同步复位优先，确保上电后所有寄存器进入确定状态
+    \item \textbf{BRAM 与分布式 RAM}：大数组用 BRAM，小规模用寄存器
+    \item \textbf{时序收敛}：关键路径（如 ALU + 寄存器堆读取 + 跳转判断）需要关注 setup/hold 时序
+    \item \textbf{验证}：每个模块都需要独立的 testbench，覆盖正常路径和边界情况
+\end{itemize}

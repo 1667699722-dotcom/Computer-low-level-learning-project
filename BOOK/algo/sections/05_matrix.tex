@@ -1,0 +1,117 @@
+两个方阵相乘 \(C = A \times B\)，定义为：
+
+\[
+C[i][j] = \sum_{k=0}^{n-1} A[i][k] \times B[k][j]
+\]
+
+直接实现是三重循环 \(O(n^3)\)。分治法的思路是：把每个矩阵切成
+\(2 \times 2\) 四块，然后对四块分别递归相乘再合并。
+
+\subsection{数据结构}
+
+代码里用了两个自定义类型：
+
+\begin{lstlisting}[style=cstyle]
+typedef int** Matrix;                    // 二维数组（指针数组）
+
+typedef struct {
+    Matrix m11, m12, m21, m22;          // 四块子矩阵
+} SplitMat;
+\end{lstlisting}
+
+每个矩阵 \texttt{Matrix} 实际上是一个指针数组，
+\texttt{mat[i]} 指向第 \texttt{i} 行的元素。
+这样写有一个好处：\texttt{mat[i][j]} 等价于 \texttt{*(mat[i] + j)}，
+与汇编里计算二维数组元素地址的方式本质一样——
+先算行偏移，再算列偏移，最后取内存。
+
+\subsection{C 代码 — 创建、释放、打印矩阵}
+
+\lstinputlisting[style=cstyle, firstline=14, lastline=40,
+    caption=src/matrix/1.c — createMatrix / freeMatrix / printMatrix]
+{../src/matrix/1.c}
+
+\subsection{C 代码 — 补零到 2 的幂次方}
+
+分治法的前提是矩阵边长是 2 的幂，这样每次能严格对半切。
+对任意大小的矩阵，我们先把它补零到下一个 2 的幂：
+
+\lstinputlisting[style=cstyle, firstline=42, lastline=66,
+    caption=src/matrix/1.c — nextpoweroftwo + padMatrix]
+{../src/matrix/1.c}
+
+注意 \texttt{pow(2, ceil(log2(n)))} 这样的浮点写法在
+实际工程中可能有精度问题，但作为演示足够直观。
+更严谨的整数实现可以用位运算：
+
+\begin{lstlisting}[style=cstyle]
+int nextpoweroftwo(int n) {
+    int p = 1;
+    while (p < n) p <<= 1;
+    return p;
+}
+\end{lstlisting}
+
+\subsection{C 代码 — 拆分、合并与矩阵加法}
+
+\lstinputlisting[style=cstyle, firstline=67, lastline=132,
+    caption=src/matrix/1.c — combieMatrix / SplitMatrix / AddMatrix]
+{../src/matrix/1.c}
+
+这里 \texttt{SplitMatrix} 实际上是在\textbf{复制}数据生成四块新矩阵
+（而不是简单地划分子数组视图）。虽然代价是额外的 \(O(n^2)\) 内存，
+但教学意义很强：能清楚看到「大矩阵 = 四块小矩阵合并」的结构。
+
+\subsection{C 代码 — 递归乘法主体}
+
+\lstinputlisting[style=cstyle, firstline=134, lastline=190,
+    caption=src/matrix/1.c — SquareMatrixMultiply（分治法矩阵乘法）]
+{../src/matrix/1.c}
+
+递归基例：当 \texttt{size == 1} 时，\(C[0][0] = A[0][0] \times B[0][0]\)，
+只是一个标量乘法。
+
+对于更大的矩阵：
+
+\begin{enumerate}
+    \item 把 A、B 各切成四块
+    \item 递归计算 8 次子乘积 \(\{D1..D8\}\)
+    \item 把子和合并回结果矩阵 C
+\end{enumerate}
+
+这个版本仍然是 \(O(n^3)\)（实际上是 8 次子乘法 + 4 次加法），
+只是把循环换成了递归。如果想真正优化复杂度，
+可以用\textbf{Strassen 算法}——把 8 次子乘法减少为 7 次，
+代价是增加更多加法。Strassen 的复杂度为 \(O(n^{\log_2 7}) \approx O(n^{2.807})\)。
+
+\subsection{C 代码 — 主程序验证}
+
+\lstinputlisting[style=cstyle, firstline=192, lastline=220,
+    caption=src/matrix/1.c — main]
+{../src/matrix/1.c}
+
+测试矩阵 \(3 \times 3\)，因为 3 不是 2 的幂，会先被补零到
+\(4 \times 4\)，然后递归相乘，最后输出时只取左上角的 \(3 \times 3\)。
+
+编译运行：
+
+\begin{lstlisting}[style=bashstyle]
+clang -o matrix src/matrix/1.c -lm
+./matrix
+\end{lstlisting}
+
+注意需要 \texttt{-lm} 链接数学库，因为用到了 \texttt{pow/log2/ceil}。
+
+\subsection{从底层视角看矩阵乘法}
+
+和前面的排序算法相比，矩阵乘法让你直接接触到两件事：
+
+\begin{itemize}
+    \item \textbf{二维数组的内存布局}：C 里 \texttt{int A[3][3]} 是行优先的，
+        等价于 9 个连续 \texttt{int}。这与第 2 章汇编里处理字符串数组
+        的做法是同一条路——先算偏移，再访问内存。
+    \item \textbf{访存模式与性能}：朴素的三重循环对 A 逐行、对 B 逐列访问。
+        在大矩阵上，B 的列访问会严重打击缓存命中率。把 B 先转置、
+        或者改写循环顺序（如 ikj 形式），可以让实际运行时间快几倍。
+        这也是下一步如果要做性能优化的方向。
+\end{itemize}

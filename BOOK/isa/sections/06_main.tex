@@ -1,0 +1,96 @@
+% ============================================================================
+% 2.6 主程序：把一切串起来
+% ============================================================================
+\subsection{hello.s：主程序入口}
+
+主程序的工作非常简单——初始化堆之后，就进入一个循环：
+读一行→复制→存到平行数组→打印→找空格。
+
+\begin{lstlisting}[style=asm,caption=hello.s — 主程序]
+.text
+.global _main
+.extern exit
+.extern memory_init
+.extern memory_alloc
+.extern memory_free
+.extern sys_write
+.extern sys_read
+.extern test_write
+.extern test_memory
+.extern test_read
+.extern test_write_memory
+.extern store_string_ptr_len
+.extern get_string_ptr
+.extern get_string_len
+.extern store_ptr_done
+.extern print_index_strings
+.extern find_two_spaces
+
+_main:
+    bl memory_init             ; 初始化堆
+    mov x19, #0               ; x19 = 循环计数器（也是字符串序号）
+
+loop:
+    mov x20, #0
+    bl store_string           ; 读一行，分配内存，存入数组
+
+    mov x20, #0
+    bl get_string_ptr_len_spaces ; 顺便检查空格位置
+
+    add x19, x19, #1
+    cmp x19, #1
+    b.eq do_exit
+    b loop
+
+do_exit:
+    b exit
+\end{lstlisting}
+
+\subsection{store\_string：读入并保存一行}
+
+\begin{lstlisting}[style=asm,caption=hello.s — store\_string]
+store_string:
+    stp x29, x30, [sp, #-16]!
+    bl test_read              ; 把一行
+    bl copy_string            ; copy_string(x0) 从 input_buf 复制到新分配的堆内存
+    mov x1, x20                ; 序号
+    bl store_string_ptr_len     ; 存入平行数组
+    ldp x29, x30, [sp], #16
+    ret
+\end{lstlisting}
+
+\subsection{get\_string\_ptr\_len\_spaces：打印并解析空格}
+
+\begin{lstlisting}[style=asm,caption=hello.s — 打印+解析]
+get_string_ptr_len_spaces:
+    stp x29, x30, [sp, #-16]!
+
+    bl print_string           ; 把刚存入的字符串再取出来打印
+    stp x1, x2, [sp, #-16]! ; 保存打印返回的指针和长度
+    bl find_two_spaces        ; 然后扫描字符串找空格位置
+    ldp x2, x3, [sp], #16
+
+get_string_ptr_len_spaces_done:
+    ldp x29, x30, [sp], #16
+    ret
+\end{lstlisting}
+
+\subsection{理解整体数据流}
+
+整个程序的数据流如下：
+
+\begin{verbatim}
+stdin → sys_read → input_buf → copy_string(从 input_buf 到 heap)
+        → (ptr, len) → store_string_ptr_len
+        → print_index_strings(x19) → sys_write → stdout
+        → find_two_spaces(buffer) → x0=第一个空格, x1=第二个空格
+\end{verbatim}
+
+程序循环一次（\texttt{x19} 递增一，直到 \texttt{x19 = 1} 时退出。
+你可以把 \texttt{cmp x19, \#1} 改成更大的数字来延长程序执行更多轮。
+
+\subsection{主循环限制}
+
+这里的循环在 \texttt{x19} 计数，
+\textbf{最多能存 MAX\_STRINGS（32）条字符串}。超过会被
+\texttt{store\_string\_ptr\_len} 里的 \texttt{cmp x1, \#MAX\_STRINGS; b.hs store\_ptr\_done} 拦截掉——如果 \texttt{x19} 超过 32，函数什么都不做就返回。

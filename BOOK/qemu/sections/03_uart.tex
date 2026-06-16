@@ -1,0 +1,96 @@
+% ============================================================================
+% 3.3 地址空间与 UART
+% ============================================================================
+\subsection{裸机地址空间的样子}
+
+QEMU 的 virt 机器把物理内存和外设都映射到同一个地址空间里。
+CPU 可以通过普通的 \texttt{ldr/str} 指令直接访问它们。
+这叫\textbf{内存映射 I/O（MMIO）}。
+
+\begin{center}
+\begin{tabular}{l l}
+\hline
+地址范围 & 内容 \\
+\hline
+\texttt{0x0000\_0000} -- \texttt{0x0800\_0000} & Flash / 只读区（QEMU 放了固件）\\
+\texttt{0x0900\_0000} -- \texttt{0x0900\_0FFF} & \textbf{UART0 串口}（我们使用这个）\\
+\texttt{0x0901\_0000} -- \texttt{0x0901\_0FFF} & UART1 串口 \\
+\texttt{0x4000\_0000} -- \texttt{0x8000\_0000} & \textbf{DRAM（1 GB）}：程序放在这里 \\
+\texttt{0x0800\_0000} -- \texttt{0x0800\_0FFF} & GIC（中断控制器）\\
+\hline
+\end{tabular}
+\end{center}
+
+所以当你执行 \texttt{str w2, [0x0900\_0000]} 时，
+CPU 发出的这个写请求落在 DRAM 之外——它被路由到 UART0 设备，
+而不是写进内存。硬件（QEMU 模拟的硬件）截获这个地址，把 \texttt{w2}
+的值当作一个要发送的字节。
+
+同样地，执行 \texttt{ldr w3, [0x0900\_0018]} 时，
+CPU 从 UART 的 FLAG 寄存器读取当前状态位。
+
+\subsection{PL011 UART 的寄存器表（关键部分）}
+
+ARM PL011 是一个标准的串口控制器，QEMU 精确模拟了它。
+每一个寄存器都是 32 位（4 字节）宽：
+
+\begin{center}
+\begin{tabular}{l l l}
+\hline
+偏移 & 名称 & 说明 \\
+\hline
+\texttt{0x00} & UARTDR（数据寄存器） & 写 = 发送一个字节；读 = 读最近收到的字节 \\
+\texttt{0x18} & UARTFR（标志寄存器） & bit 4 = RXFE（接收空）；bit 5 = TXFF（发送满）\\
+\hline
+\end{tabular}
+\end{center}
+
+其他寄存器（波特率、线路控制等）在 QEMU 的 PL011 里通常已经被
+模拟层初始化为正常可用的状态，所以最小程序不必设置它们。
+你只要能向 DR 发送字节、检查 FR 是否忙碌即可。
+
+下面我们逐行解释 \texttt{start.s} 中最关键的两条指令：
+
+\paragraph{读标志寄存器 — \texttt{ldr w3, [x0, \#0x18]}}
+\texttt{x0} 指向 \texttt{0x09000000}，加偏移 \texttt{0x18} 后
+得到 FLAG 寄存器地址。第 5 位是"发送 FIFO 满"标志，若为 1 就必须等待。
+
+\paragraph{\texttt{tbnz w3, \#5, wait\_uart} — 忙等直到不忙}
+Test Bit and Branch if Not Zero：如果 \texttt{w3} 的第 5 位是 1，
+就跳回 \texttt{wait\_uart} 标签继续读。否则（发送器空闲），
+继续执行。这是硬件层面的"忙等"循环——真实硬件里这个过程可能需要
+几十纳秒；QEMU 里几乎瞬间完成。
+
+\paragraph{\texttt{str w2, [x0]} — 发送字节}
+把 \texttt{w2} 的内容写入 \texttt{0x09000000}（UARTDR）。
+QEMU 看到这个地址被写入，就把低 8 位当作一个 ASCII 字符送到终端。
+
+\subsection{如果要从用户键盘接收数据}
+
+发送的反方向操作是：
+\begin{enumerate}
+    \item 读 \texttt{UARTFR}（0x09000018），检查第 4 位（RXFE = Receiver FIFO Empty）
+    \item 如果 RXFE=0，说明接收到了新字节
+    \item 读 \texttt{UARTDR}（0x09000000），取出低 8 位，就是用户敲的字符
+\end{enumerate}
+
+这对应第 4 章 Verilog 里的 UART 接收器做的事——它们本质是同一套
+硬件逻辑，一个由你用 Verilog 设计，一个由 QEMU 用 C 模拟。
+
+\subsection{内存与硬件设备的区别}
+
+理解这个模型最重要的一点是：
+
+\begin{center}
+\textbf{地址本身没有意义。把地址映射到 RAM 还是设备，由硬件（或 QEMU）决定。}
+\end{center}
+
+\begin{itemize}
+    \item 写 \texttt{0x4000\_0000} — 写到 DRAM，下次读会读到你写的值。
+    \item 写 \texttt{0x0900\_0000} — 写到 UART，下次读这个地址也许读到的是一个刚接收到的字节。
+    \item 读 \texttt{0x0900\_0018} — 读到的不是 RAM，是硬件状态寄存器。
+\end{itemize}
+
+在真实芯片里，这是由 SOC（System on Chip）内部的\textbf{地址解码器}
+实现的——它根据地址范围把读写请求路由到不同的模块。
+你在第 4 章里做的 Verilog UART，就是这个模型中的一个模块。

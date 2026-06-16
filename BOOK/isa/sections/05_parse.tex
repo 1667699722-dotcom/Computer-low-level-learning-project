@@ -1,0 +1,91 @@
+% ============================================================================
+% 2.5 命令解析：find_two_spaces
+% ============================================================================
+\subsection{把命令切成 token 的第一步}
+
+如果用户输入的是"add file1 file2"之类的命令，我们需要把它切开：
+动词是第一个词，参数是第二、第三个词……最朴素的方法就是
+扫一遍字符串，找出\textbf{第一个空格}和\textbf{第二个空格}的位置，
+然后两个空格之间的就是各个 token。
+
+\subsection{find\_two\_spaces：单遍扫描找两个空格}
+
+\begin{lstlisting}[style=asm,caption=str\_parse\_cmd.s — find\_two\_spaces]
+.text
+.global find_two_spaces
+
+find_two_spaces:
+    stp x29, x30, [sp, #-16]!
+    mov x29, sp
+
+    mov x0, x1                   ; x0 = 字符串起始地址
+    mov x1, x2                   ; x1 = 字符串总长度
+    mov x2, #0                   ; x2 = 当前扫描位置
+    mov x3, #-1                  ; x3 = 第一个空格的位置（-1 = 未找到）
+    mov x4, #-1                  ; x4 = 第二个空格的位置
+
+loop:
+    cmp  x2, x1                  ; 已扫描完？
+    b.hs not_found_check
+
+    ldrb w5, [x0, x2]            ; 读一个字节
+    cmp  w5, #' '                ; 是空格吗？
+    b.ne next_byte
+
+    cmp  x3, #-1                 ; 第一个空格还没记录？
+    b.ne found_second
+    mov  x3, x2                  ; 是第一个空格
+    b    next_byte
+
+found_second:
+    mov  x4, x2                  ; 找到第二个空格
+    b    done
+
+next_byte:
+    add  x2, x2, #1
+    b    loop
+
+not_found_check:
+    cmp  x3, #-1
+    b.eq not_found               ; 连第一个空格都没找到
+    cmp  x4, #-1
+    b.eq not_found               ; 只找到一个空格
+    b    done
+
+not_found:
+    mov x0, #-1
+    mov x1, #-1
+    b   return
+
+done:
+    mov x0, x3                   ; x0 = 第一个空格位置
+    mov x1, x4                   ; x1 = 第二个空格位置
+
+return:
+    ldp x29, x30, [sp], #16
+    ret
+\end{lstlisting}
+
+\paragraph{返回值约定}
+调用 \texttt{find\_two\_spaces} 后：
+\begin{itemize}
+    \item 成功找到两个空格：\texttt{x0} = 第一个空格的偏移，
+        \texttt{x1} = 第二个空格的偏移
+    \item 失败：\texttt{x0 = -1, x1 = -1}
+\end{itemize}
+
+有了这两个位置，后续就可以做简单切分：
+\begin{itemize}
+    \item 从 0 到 \texttt{x0} 之间 → 第一个 token（如 "add"）
+    \item 从 \texttt{x0+1} 到 \texttt{x1} 之间 → 第二个 token（如 "file1"）
+    \item 从 \texttt{x1+1} 到末尾 → 第三个 token（如 "file2"）
+\end{itemize}
+
+\paragraph{注意 AArch64 下的寻址限制}
+代码里用 \texttt{ldrb w5, [x0, x2]}，这里的 \texttt{x2} 是普通寄存器，
+可以直接作为变址。但在 \texttt{store\_string\_ptr\_len} 里，
+我们用 \texttt{str w2, [x3, x5]} 而不是 \texttt{str w2, [x3, x1, lsl \#2]}——
+因为 AArch64 的"寄存器+寄存器×缩放"寻址只允许缩放因子为 0、1、2、3
+（即 ×1、×2、×4、×8），\textbf{但 w2（32 位寄存器）作为目的时，
+str w2 的指令编码里不允许同时用带 lsl 的变址}。所以当缩放因子不是 3 时，
+我们先把 \texttt{x1 * 4} 算到 \texttt{x5} 里再用。

@@ -1,0 +1,30 @@
+% ============================================================================
+% 第 4 章 - Verilog 芯片设计
+% ============================================================================
+\chapter{Verilog 芯片设计}
+
+前面我们在用户态和裸机环境下写软件——我们一直假定 CPU、UART、RAM
+这些东西已经存在。本章我们反过来：用 Verilog 写一个简单的硬件模块，
+让自己理解 CPU 之外的世界是如何工作的。
+
+我们写三个模块：
+\begin{itemize}
+    \item \textbf{adder.v}：一个 64 位字节加法器，演示如何用寄存器做简单计算
+    \item \textbf{uart\_tx.v}：UART 发送器，把并行字节转成串行比特流送出
+    \item \textbf{uart\_rx.v}：UART 接收器，把外部输入的串行比特流转回并行字节
+\end{itemize}
+
+\section{Verilog 基本概念}
+\input{chip/sections/01_concepts}
+
+\section{adder.v：64 位字节加法器}
+\input{chip/sections/02_adder}
+
+\section{uart\_tx.v：UART 发送器}
+\input{chip/sections/03_uart_tx}
+
+\section{uart\_rx.v：UART 接收器}
+\input{chip/sections/04_uart_rx}
+
+\section{综合到 FPGA：从代码到硬件}
+\input{chip/sections/05_fpga}

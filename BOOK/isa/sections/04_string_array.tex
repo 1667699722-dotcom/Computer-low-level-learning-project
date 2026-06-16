@@ -1,0 +1,152 @@
+% ============================================================================
+% 2.4 平行数组：字符串的索引存储
+% ============================================================================
+\subsection{为什么需要索引存储}
+
+每一次循环，用户都会输入一行内容。如果只是把它们零散地放到堆里，
+时间久了就找不到了。我们需要一种\textbf{按序号}存取的结构：
+存第 0 个、第 1 个、第 2 个……，然后按同样的序号取出来打印。
+
+为此我们用两个平行数组：一个存每个字符串的\textbf{指针}（64 位 / 8 字节），
+一个存每个字符串的\textbf{长度}（32 位 / 4 字节）。配合一个计数器记录
+存了多少条。
+
+\subsection{string\_array.s：数据区定义}
+
+\begin{lstlisting}[style=asm,caption=string\_array.s — 数据区定义]
+.data
+.align 4
+
+.equ MAX_STRINGS, 32             ; 最多存 32 条字符串
+
+string_count: .word 0            ; 计数器，已存入多少条
+string_ptrs: .space MAX_STRINGS * 8  ; 指针数组，每项 8 字节
+string_lens: .space MAX_STRINGS * 4  ; 长度数组，每项 4 字节
+\end{lstlisting}
+
+从内存地址看，它的布局是：
+
+\begin{center}
+\begin{tabular}{|l|l|l|l|}
+\hline
+string\_count & 4 字节 & 存放当前已存入条数 & \\
+\hline
+string\_ptrs[0] & 8 字节 & 第 0 条的地址 & \\
+\hline
+string\_ptrs[1] & 8 字节 & 第 1 条的地址 & \\
+\hline
+\(\vdots\) & & & \\
+\hline
+string\_ptrs[31] & 8 字节 & 第 31 条的地址 & \\
+\hline
+string\_lens[0] & 4 字节 & 第 0 条的长度 & \\
+\hline
+\(\vdots\) & & & \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{store\_string\_ptr\_len：写入一对指针和长度}
+
+\begin{lstlisting}[style=asm,caption=string\_array.s — store\_string\_ptr\_len]
+.text
+.global store_string_ptr_len
+.global store_ptr_done
+.global get_string_ptr
+.global get_string_len
+.global print_index_strings
+.extern sys_write
+
+store_string_ptr_len:
+    stp x29, x30, [sp, #-16]!
+    mov x29, sp
+
+    ; 检查是否超过上限
+    cmp x1, #MAX_STRINGS
+    b.hs store_ptr_done
+
+    ; 存指针：string_ptrs[x1 * 8] = x0
+    adrp x4, string_ptrs@PAGE
+    add  x4, x4, string_ptrs@PAGEOFF
+    str  x0, [x4, x1, lsl #3]   ; x1 * 8 作为偏移
+
+    ; 存长度：string_lens[x1 * 4] = x2
+    adrp x3, string_lens@PAGE
+    add  x3, x3, string_lens@PAGEOFF
+    lsl  x5, x1, #2
+    str  w2, [x3, x5]
+
+store_ptr_done:
+    ldp x29, x30, [sp], #16
+    ret
+\end{lstlisting}
+
+\paragraph{调用约定}
+调用者需要把三个参数放进来：
+\begin{itemize}
+    \item \texttt{x0} — 字符串在内存中的起始地址（就是 \texttt{copy\_string} 的返回值）
+    \item \texttt{x1} — 序号（第几条）
+    \item \texttt{x2} — 字符串长度（字节数）
+\end{itemize}
+
+注意 ARM 的指令 \texttt{str x0, [x4, x1, lsl \#3]} 可以直接
+在一个内存操作里完成"基址 + 变址×8"的计算——因为指针是 8 字节，
+正好用 \texttt{lsl \#3}（左移 3 位 = ×8）。长度是 4 字节，
+所以用 \texttt{lsl \#2}（左移 2 位 = ×4），但 AArch64 不允许
+\texttt{str} 的寻址直接放 \texttt{lsl \#2}，所以先算到 \texttt{x5} 再用。
+
+\subsection{print\_index\_strings：按序号把字符串打印出来}
+
+写入之后我们要能读回来打印。读的逻辑是写入的反向：
+
+\begin{lstlisting}[style=asm,caption=string\_array.s — print\_index\_strings]
+print_index_strings:
+    stp x29, x30, [sp, #-16]!
+    mov x29, sp
+
+    cmp x0, #MAX_STRINGS
+    b.hs print_index_strings_done
+
+    ; 取指针：x1 = string_ptrs[x0 * 8]
+    adrp x3, string_ptrs@PAGE
+    add  x3, x3, string_ptrs@PAGEOFF
+    ldr  x1, [x3, x0, lsl #3]
+
+    ; 取长度：x2 = string_lens[x0 * 4]
+    adrp x3, string_lens@PAGE
+    add  x3, x3, string_lens@PAGEOFF
+    lsl  x4, x0, #2
+    ldr  w2, [x3, x4]
+
+    ; 如果指针或长度为 0，说明这个位置从未被写入过
+    cbz x1, print_index_strings_done
+    cbz x2, print_index_strings_done
+
+    ; 调用 sys_write(1, ptr, len) 打印
+    mov x0, #1
+    stp x1, x2, [sp, #-16]!    ; 压栈保护 x1,x2
+    bl  sys_write
+    ldp x1, x2, [sp], #16
+
+print_index_strings_done:
+    ldp x29, x30, [sp], #16
+    ret
+\end{lstlisting}
+
+调用者只需要把序号（0、1、2…）放 \texttt{x0}，\texttt{bl print\_index\_strings}
+就能把那一行打印到标准输出。如果那个序号的位置从未写入过，
+\texttt{string\_ptrs[i]} 里是 0（\texttt{.space} 初始化为 0），
+就会被 \texttt{cbz} 抓住，直接退出——不会因为野指针而崩溃。
+
+\paragraph{为什么用两个数组而不是一个结构体数组？}
+如果用结构体（每条存一个指针 + 一个长度，12 字节对齐到 16 字节），
+每次写入都要写一条连续的 16 字节，而读的时候不需要长度的话也要
+把整条读出来。分开两个数组时：
+\begin{itemize}
+    \item 写入：两条 store 指令
+    \item 只需要指针时：只读 8 字节
+    \item 只需要长度时：只读 4 字节
+    \item 按序号索引时，不需要算结构体对齐的 padding
+\end{itemize}
+对于这个小程序来说两种方式都可以，但平行数组的写法更直观，
+循环内每次只做一件小事。

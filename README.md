@@ -140,13 +140,5 @@ Classic algorithms implemented in C.
 Learning CUDA parallel programming.
 
 
-***
 
-## 相关文档 / Related Docs
-
-- [ARM64 指令集参考 / ARM64 ISA Reference](ISA/spec/ISA.md)
-- [开发进度计划 / Development Schedule](ISA/spec/schedule.md)
-- [芯片设计文档 / Chip Design Docs](Chip/design.md)
-- [QEMU 裸机启动代码 / QEMU Bare-metal Boot](QEMU/start.s)
-- [QEMU 编译运行脚本 / QEMU Build & Run Script](QEMU/run.sh)
 

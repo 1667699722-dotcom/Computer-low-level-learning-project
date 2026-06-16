@@ -1,0 +1,80 @@
+% ============================================================================
+% 3.1 start.s
+% ============================================================================
+\subsection{极简的裸机程序}
+
+这是一个完整的"在裸机上打印一句话然后永远等待"的程序。
+
+\begin{lstlisting}[style=asm,caption=QEMU/start.s — 最简裸机程序]
+.section .text
+.global _start
+
+_start:
+    ldr x0, =0x09000000      ; UART0 的基地址（QEMU virt 机器的约定）
+    ldr x1, =msg              ; 字符串所在的地址
+
+print_loop:
+    ldrb w2, [x1], #1        ; 读 x1 指向的字节，然后 x1++
+    cbz  w2, halt             ; 读到 0（字符串结尾）就退出
+
+wait_uart:
+    ldr  w3, [x0, #0x18]     ; 读 UART 的 FLAG 寄存器 (UARTFR, 偏移 0x18)
+    tbnz w3, #5, wait_uart   ; bit 5 = TXFF (发送 FIFO 满)，忙等直到不忙
+    str  w2, [x0]            ; 把字节写到 UART 的数据寄存器 (UARTDR, 偏移 0x0)
+    b    print_loop
+
+halt:
+    wfe                      ; 等待事件：进入低功耗状态
+    b    halt                ; 万一被唤醒，继续等待
+
+.section .rodata
+msg:
+    .asciz "Hello QEMU AArch64 bare metal!\n"
+\end{lstlisting}
+
+这不到 20 行做了下面几件事：
+
+\paragraph{步骤 1：把两个关键地址取到寄存器}
+\begin{itemize}
+    \item \texttt{x0 = 0x0900\_0000} —— QEMU 模拟的 ARM PL011 UART0 的
+        MMIO 基地址。只要往这个地址写数据，QEMU 就会把它当成字符显示到终端。
+    \item \texttt{x1 = msg} —— 字符串在程序内存中的起始地址。
+\end{itemize}
+
+\paragraph{步骤 2：逐字节打印}
+每一个字符的处理都要先\textbf{查询 UART 是否空闲}：
+
+\begin{itemize}
+    \item 读 \texttt{[x0, \#0x18]}（UARTFR 寄存器），检查第 5 位 (TXFF)。
+    \item TXFF = Transmit FIFO Full。为 1 表示发送缓冲区已满，
+        CPU 必须等待。
+    \item 用 \texttt{tbnz w3, \#5, wait\_uart} 忙等这一位变 0。
+    \item 一旦空闲，\texttt{str w2, [x0]} 把当前字节写出去。
+\end{itemize}
+
+PL011 是 ARM 官方定义的 UART 硬件规范，QEMU 按这个标准实现了
+一个虚拟版本。所以你只要按照 PL011 的寄存器表操作，就能驱动它。
+
+\paragraph{步骤 3：停机}
+程序打印完字符串（遇到 \texttt{0} 字节即 \texttt{.asciz} 的字符串尾）后，
+执行 \texttt{wfe}（Wait For Event）。这是一条 ARM 指令，
+让 CPU 停止取指、进入低功耗状态，直到外部中断唤醒它。
+我们没有任何中断源被启用，所以它实际上就是永久停机了。
+
+\subsection{和 ISA 章节的差异}
+
+与 ISA/ 目录里的用户态汇编相比，这段代码有几个不同之处：
+
+\begin{itemize}
+    \item 没有 ADRP/ADD 组合——因为我们不要求位置无关代码。
+        链接器会把 \_start 放到 \texttt{0x4000\_0000}，
+        所以直接用 \texttt{ldr reg, =address} 就能拿到绝对地址。
+    \item 没有 \texttt{svc \#0x80}——我们直接操作硬件，没有内核帮你做事。
+    \item 入口是 \texttt{\_start} 不是 \texttt{\_main}——链接脚本
+        指定入口点为 \texttt{\_start}，直接在这里开始执行。
+    \item \texttt{.section .rodata} 把只读数据明确放在只读段里。
+\end{itemize}
+
+整个程序唯一真正"执行"的部分就是打印——它不会从用户键盘读，
+也不会做更复杂的事。后面你想扩展它的话，就是在 \texttt{halt} 之前
+加更多功能（比如轮询 UART 的接收寄存器 \texttt{[x0, \#0x00]} 从用户键盘读）。
