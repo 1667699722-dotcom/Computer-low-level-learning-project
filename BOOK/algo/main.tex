@@ -1,7 +1,7 @@
 % Chapter 5 — C 语言算法与数据结构
 \chapter{C 语言算法与数据结构}
 
-对应项目目录：\texttt{src/}。
+对应项目目录：\texttt{algo/src/}。
 
 \section{本章讲什么}
 
@@ -10,6 +10,7 @@
 \begin{itemize}
     \item \textbf{插入排序} — 最朴素的排序思路，理解「逐个插入」
     \item \textbf{归并排序（含逆序对统计）} — 分治思想的典范
+    \item \textbf{堆排序} — 把数组看成二叉树，原地 \(O(n \log n)\)
     \item \textbf{最大子数组问题} — 暴力枚举 vs 分治法
     \item \textbf{矩阵乘法（分治法）} — 二维数据的递归拆分
 \end{itemize}
@@ -23,6 +24,10 @@
 \section{归并排序 — 分治 + 逆序对}
 
 \input{algo/sections/03_merge_sort}
+
+\section{堆排序 — 把数组当二叉树}
+
+\input{algo/sections/07_heapsort}
 
 \section{最大子数组 — 从暴力到分治}
 

@@ -28,8 +28,8 @@ typedef struct {
 \subsection{C 代码 — 创建、释放、打印矩阵}
 
 \lstinputlisting[style=cstyle, firstline=14, lastline=40,
-    caption=src/matrix/1.c — createMatrix / freeMatrix / printMatrix]
-{../src/matrix/1.c}
+    caption=algo/src/matrix/1.c — createMatrix / freeMatrix / printMatrix]
+{../algo/src/matrix/1.c}
 
 \subsection{C 代码 — 补零到 2 的幂次方}
 
@@ -37,8 +37,8 @@ typedef struct {
 对任意大小的矩阵，我们先把它补零到下一个 2 的幂：
 
 \lstinputlisting[style=cstyle, firstline=42, lastline=66,
-    caption=src/matrix/1.c — nextpoweroftwo + padMatrix]
-{../src/matrix/1.c}
+    caption=algo/src/matrix/1.c — nextpoweroftwo + padMatrix]
+{../algo/src/matrix/1.c}
 
 注意 \texttt{pow(2, ceil(log2(n)))} 这样的浮点写法在
 实际工程中可能有精度问题，但作为演示足够直观。
@@ -55,8 +55,8 @@ int nextpoweroftwo(int n) {
 \subsection{C 代码 — 拆分、合并与矩阵加法}
 
 \lstinputlisting[style=cstyle, firstline=67, lastline=132,
-    caption=src/matrix/1.c — combieMatrix / SplitMatrix / AddMatrix]
-{../src/matrix/1.c}
+    caption=algo/src/matrix/1.c — combieMatrix / SplitMatrix / AddMatrix]
+{../algo/src/matrix/1.c}
 
 这里 \texttt{SplitMatrix} 实际上是在\textbf{复制}数据生成四块新矩阵
 （而不是简单地划分子数组视图）。虽然代价是额外的 \(O(n^2)\) 内存，
@@ -65,8 +65,8 @@ int nextpoweroftwo(int n) {
 \subsection{C 代码 — 递归乘法主体}
 
 \lstinputlisting[style=cstyle, firstline=134, lastline=190,
-    caption=src/matrix/1.c — SquareMatrixMultiply（分治法矩阵乘法）]
-{../src/matrix/1.c}
+    caption=algo/src/matrix/1.c — SquareMatrixMultiply（分治法矩阵乘法）]
+{../algo/src/matrix/1.c}
 
 递归基例：当 \texttt{size == 1} 时，\(C[0][0] = A[0][0] \times B[0][0]\)，
 只是一个标量乘法。
@@ -87,8 +87,8 @@ int nextpoweroftwo(int n) {
 \subsection{C 代码 — 主程序验证}
 
 \lstinputlisting[style=cstyle, firstline=192, lastline=220,
-    caption=src/matrix/1.c — main]
-{../src/matrix/1.c}
+    caption=algo/src/matrix/1.c — main]
+{../algo/src/matrix/1.c}
 
 测试矩阵 \(3 \times 3\)，因为 3 不是 2 的幂，会先被补零到
 \(4 \times 4\)，然后递归相乘，最后输出时只取左上角的 \(3 \times 3\)。
@@ -96,7 +96,7 @@ int nextpoweroftwo(int n) {
 编译运行：
 
 \begin{lstlisting}[style=bashstyle]
-clang -o matrix src/matrix/1.c -lm
+clang -o matrix algo/src/matrix/1.c -lm
 ./matrix
 \end{lstlisting}
 

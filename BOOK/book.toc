@@ -115,24 +115,33 @@
 \contentsline {subsection}{\numberline {5.3.3}C 代码 — 合并函数}{44}{subsection.5.3.3}%
 \contentsline {subsection}{\numberline {5.3.4}C 代码 — 递归排序函数与主程序}{45}{subsection.5.3.4}%
 \contentsline {subsection}{\numberline {5.3.5}编译与运行}{45}{subsection.5.3.5}%
-\contentsline {section}{\numberline {5.4}最大子数组 — 从暴力到分治}{46}{section.5.4}%
-\contentsline {subsection}{\numberline {5.4.1}解法一：暴力枚举所有可能的子数组}{46}{subsection.5.4.1}%
-\contentsline {subsection}{\numberline {5.4.2}解法二：分治法}{47}{subsection.5.4.2}%
-\contentsline {subsubsection}{跨中点的最大子数组 — \texttt {findmaxcrossingsubarray}}{47}{Item.27}%
-\contentsline {subsubsection}{主递归函数}{49}{lstnumber.5.5.35}%
-\contentsline {subsubsection}{输入预处理和输出结果}{49}{lstnumber.5.6.26}%
-\contentsline {subsection}{\numberline {5.4.3}时间复杂度对比}{50}{subsection.5.4.3}%
-\contentsline {section}{\numberline {5.5}矩阵乘法 — 二维分治}{50}{section.5.5}%
-\contentsline {subsection}{\numberline {5.5.1}数据结构}{50}{subsection.5.5.1}%
-\contentsline {subsection}{\numberline {5.5.2}C 代码 — 创建、释放、打印矩阵}{50}{subsection.5.5.2}%
-\contentsline {subsection}{\numberline {5.5.3}C 代码 — 补零到 2 的幂次方}{51}{subsection.5.5.3}%
-\contentsline {subsection}{\numberline {5.5.4}C 代码 — 拆分、合并与矩阵加法}{52}{subsection.5.5.4}%
-\contentsline {subsection}{\numberline {5.5.5}C 代码 — 递归乘法主体}{54}{subsection.5.5.5}%
-\contentsline {subsection}{\numberline {5.5.6}C 代码 — 主程序验证}{55}{subsection.5.5.6}%
-\contentsline {subsection}{\numberline {5.5.7}从底层视角看矩阵乘法}{56}{subsection.5.5.7}%
-\contentsline {section}{\numberline {5.6}从 C 代码到汇编 — 底层视角}{56}{section.5.6}%
-\contentsline {subsection}{\numberline {5.6.1}函数调用 vs 栈操作}{57}{subsection.5.6.1}%
-\contentsline {subsection}{\numberline {5.6.2}数组与指针 vs [base, index, shift]}{57}{subsection.5.6.2}%
-\contentsline {subsection}{\numberline {5.6.3}结构体与内存对齐}{57}{subsection.5.6.3}%
-\contentsline {subsection}{\numberline {5.6.4}从算法到硬件的路径}{57}{subsection.5.6.4}%
-\contentsline {subsubsection}{下一步可以做的事}{58}{subsection.5.6.4}%
+\contentsline {section}{\numberline {5.4}堆排序 — 把数组当二叉树}{46}{section.5.4}%
+\contentsline {subsection}{\numberline {5.4.1}核心思路：把数组看成一棵二叉树}{46}{subsection.5.4.1}%
+\contentsline {subsection}{\numberline {5.4.2}C 代码 — 堆性质维护 Maxheapify}{46}{subsection.5.4.2}%
+\contentsline {subsection}{\numberline {5.4.3}C 代码 — 建堆 BuildmaxHeap}{47}{subsection.5.4.3}%
+\contentsline {subsection}{\numberline {5.4.4}C 代码 — Heapsort 主函数}{47}{subsection.5.4.4}%
+\contentsline {subsection}{\numberline {5.4.5}C 代码 — 辅助函数与测试}{48}{subsection.5.4.5}%
+\contentsline {subsection}{\numberline {5.4.6}C 代码 — main 测试程序}{48}{subsection.5.4.6}%
+\contentsline {subsection}{\numberline {5.4.7}时间复杂度}{49}{subsection.5.4.7}%
+\contentsline {subsection}{\numberline {5.4.8}与其他排序的对比}{49}{subsection.5.4.8}%
+\contentsline {section}{\numberline {5.5}最大子数组 — 从暴力到分治}{49}{section.5.5}%
+\contentsline {subsection}{\numberline {5.5.1}解法一：暴力枚举所有可能的子数组}{49}{subsection.5.5.1}%
+\contentsline {subsection}{\numberline {5.5.2}解法二：分治法}{51}{subsection.5.5.2}%
+\contentsline {subsubsection}{跨中点的最大子数组 — \texttt {findmaxcrossingsubarray}}{51}{Item.31}%
+\contentsline {subsubsection}{主递归函数}{52}{lstnumber.5.10.35}%
+\contentsline {subsubsection}{输入预处理和输出结果}{53}{lstnumber.5.11.26}%
+\contentsline {subsection}{\numberline {5.5.3}时间复杂度对比}{53}{subsection.5.5.3}%
+\contentsline {section}{\numberline {5.6}矩阵乘法 — 二维分治}{54}{section.5.6}%
+\contentsline {subsection}{\numberline {5.6.1}数据结构}{54}{subsection.5.6.1}%
+\contentsline {subsection}{\numberline {5.6.2}C 代码 — 创建、释放、打印矩阵}{54}{subsection.5.6.2}%
+\contentsline {subsection}{\numberline {5.6.3}C 代码 — 补零到 2 的幂次方}{55}{subsection.5.6.3}%
+\contentsline {subsection}{\numberline {5.6.4}C 代码 — 拆分、合并与矩阵加法}{56}{subsection.5.6.4}%
+\contentsline {subsection}{\numberline {5.6.5}C 代码 — 递归乘法主体}{57}{subsection.5.6.5}%
+\contentsline {subsection}{\numberline {5.6.6}C 代码 — 主程序验证}{59}{subsection.5.6.6}%
+\contentsline {subsection}{\numberline {5.6.7}从底层视角看矩阵乘法}{60}{subsection.5.6.7}%
+\contentsline {section}{\numberline {5.7}从 C 代码到汇编 — 底层视角}{60}{section.5.7}%
+\contentsline {subsection}{\numberline {5.7.1}函数调用 vs 栈操作}{60}{subsection.5.7.1}%
+\contentsline {subsection}{\numberline {5.7.2}数组与指针 vs [base, index, shift]}{60}{subsection.5.7.2}%
+\contentsline {subsection}{\numberline {5.7.3}结构体与内存对齐}{61}{subsection.5.7.3}%
+\contentsline {subsection}{\numberline {5.7.4}从算法到硬件的路径}{61}{subsection.5.7.4}%
+\contentsline {subsubsection}{下一步可以做的事}{61}{subsection.5.7.4}%

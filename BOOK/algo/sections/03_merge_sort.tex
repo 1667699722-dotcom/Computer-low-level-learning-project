@@ -24,7 +24,7 @@
 
 \lstinputlisting[style=cstyle, firstline=1, lastline=34,
     caption=src/sort/merge\_sort.c — Merge 函数（含逆序对计数）]
-{../src/sort/merge_sort.c}
+{../algo/src/sort/merge_sort.c}
 
 这段代码还顺便统计了\textbf{逆序对}（inversion）—— 也就是数组中
 `\(i < j\) 但 \(A[i] > A[j]\)` 的情况数。关键一行是：
@@ -41,7 +41,7 @@ count += mid - i + 1;   // 当从右半部分取出元素时
 
 \lstinputlisting[style=cstyle, firstline=36, lastline=61,
     caption=src/sort/merge\_sort.c — Mergesort 递归函数 + main]
-{../src/sort/merge_sort.c}
+{../algo/src/sort/merge_sort.c}
 
 注意这段代码使用了\textbf{从 1 开始}的数组下标习惯（\texttt{A[1..n]}），
 这是《算法导论》里常用的写法，便于计算 \texttt{mid}。
@@ -51,7 +51,7 @@ count += mid - i + 1;   // 当从右半部分取出元素时
 \subsection{编译与运行}
 
 \begin{lstlisting}[style=bashstyle]
-clang -o merge src/sort/merge_sort.c
+clang -o merge algo/src/sort/merge_sort.c
 ./merge
 1 2 3 4 5 6 7 8
 逆序对个数为：10

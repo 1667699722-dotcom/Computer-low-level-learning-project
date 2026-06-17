@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2026.1.10)  17 JUN 2026 09:55
+This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2026.1.10)  17 JUN 2026 15:50
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -901,58 +901,65 @@ File: lstlang1.sty 2024/09/23 1.10c listings language file
 (/usr/local/texlive/2025/texmf-dist/tex/latex/listings/lstmisc.sty
 File: lstmisc.sty 2024/09/23 1.10c (Carsten Heinz)
 )
-(../src/sort/inserton_sort.c)
+(../algo/src/sort/inserton_sort.c)
 
 [42]) (./algo/sections/03_merge_sort.tex
 
-[43] (../src/sort/merge_sort.c)
+[43] (../algo/src/sort/merge_sort.c)
 
-[44] (../src/sort/merge_sort.c)) (./algo/sections/04_max_subarray.tex
+[44] (../algo/src/sort/merge_sort.c)) (./algo/sections/07_heapsort.tex
 
-[45] (../src/findmaximumsubarray/1.c
+[45] (../algo/src/sort/heap_sort.c)
 
-[46]) (../src/findmaximumsubarray/2.c
+[46] (../algo/src/sort/heap_sort.c) (../algo/src/sort/heap_sort.c
 
-[47])
+[47]) (../algo/src/sort/heap_sort.c) (../algo/src/sort/heap_sort.c)
 
-[48] (../src/findmaximumsubarray/2.c) (../src/findmaximumsubarray/2.c
+[48]) (./algo/sections/04_max_subarray.tex (../algo/src/findmaximumsubarray/1.c
 
-[49])) (./algo/sections/05_matrix.tex (../src/matrix/1.c
 
-[50]) (../src/matrix/1.c
-
-[51]) (../src/matrix/1.c
-
-[52])
+[49])
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 
-[53] (../src/matrix/1.c
+[50] (../algo/src/findmaximumsubarray/2.c
 
-[54]) (../src/matrix/1.c
+[51]) (../algo/src/findmaximumsubarray/2.c
 
-[55])) (./algo/sections/06_relation.tex
+[52]) (../algo/src/findmaximumsubarray/2.c)) (./algo/sections/05_matrix.tex
 
-[56]
+[53] (../algo/src/matrix/1.c
 
-[57]))
+[54]) (../algo/src/matrix/1.c)
 
-[58] (./book.aux)
+[55] (../algo/src/matrix/1.c
+
+[56]) (../algo/src/matrix/1.c
+
+[57])
+
+[58] (../algo/src/matrix/1.c)
+
+[59]) (./algo/sections/06_relation.tex
+
+[60]))
+
+[61] (./book.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2022/08/05>
  ***********
 Package rerunfilecheck Info: File `book.out' has not changed.
-(rerunfilecheck)             Checksum: 681A2B7F58F9B349BA1023C4662F8267;14553.
+(rerunfilecheck)             Checksum: 7C99F077CB3EA1E654926D01F4892932;16076.
  ) 
 Here is how much of TeX's memory you used:
- 19498 strings out of 473832
- 410287 string characters out of 5729481
- 1497516 words of memory out of 5000000
- 42154 multiletter control sequences out of 15000+600000
- 567790 words of font info for 109 fonts, out of 8000000 for 9000
+ 19569 strings out of 473832
+ 412812 string characters out of 5729481
+ 1497519 words of memory out of 5000000
+ 42210 multiletter control sequences out of 15000+600000
+ 567798 words of font info for 110 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
  93i,9n,114p,343b,2338s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on book.pdf (62 pages).
+Output written on book.pdf (65 pages).
