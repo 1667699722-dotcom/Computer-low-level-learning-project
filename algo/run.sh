@@ -1,4 +1,4 @@
-clang src/matrix/1.c -g -o bin/matrix
+clang src/sort/heap_sort.c -g -o bin/sort
 cat << 'PASS'
 
 ╔══════════════════════════════════════════╗
@@ -15,4 +15,4 @@ cat << 'PASS'
 ╚══════════════════════════════════════════╝
 
 PASS
- ./bin/matrix
+ ./bin/sort
