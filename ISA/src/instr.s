@@ -44,25 +44,65 @@ store_instr_addrs:
     adrp x23, instr_addrs@PAGE          
     add x23, x23, instr_addrs@PAGEOFF ;存入instr_addrs指针
 
-parse_instr:
+parse_instr1:
     mov x0,x19
     add x0,x0,#1
     bl memory_alloc
     mov x27,x0
     mov x28,#0
-extract_byte_loop:
+extract_byte_loop1:
     cmp x28,x19
-    b.ge extract_done
+    b.ge extract_done1
     ldrb w29,[x21,x28]
     strb w29,[x27,x28]
     add x28,x28,#1
-    b extract_byte_loop
-extract_done:
+    b extract_byte_loop1
+extract_done1:
     strb wzr,[x27,x28]
     str x27,[x24]
-    str x20,[x24,#8]
-    str x21,[x24,#16]
-    str x22,[x24,#24]
+
+parse_instr2:
+    sub x0,x20,x19
+    add x0,x0,#1
+    bl memory_alloc
+    mov x27,x0
+    mov x28,#0         ; 新字符串索引从 0 开始
+    add x29,x19,#1     ; 原字符串索引从 x19+1 开始
+extract_byte_loop2:
+    cmp x29,x20
+    b.ge extract_done2
+    ldrb w30,[x21,x29]
+    strb w30,[x27,x28]
+    add x28,x28,#1
+    add x29,x29,#1
+    b extract_byte_loop2
+extract_done2:
+    strb wzr,[x27,x28]
+    str x27,[x24,#8]
+
+parse_instr3:
+    sub x0,x22,x20
+    add x0,x0,#1
+    bl memory_alloc
+    mov x27,x0
+    mov x28,#0         ; 新字符串索引从 0 开始
+    add x29,x20,#1     ; 原字符串索引从 x20+1 开始
+extract_byte_loop3:
+    cmp x29,x22
+    b.ge extract_done3
+    ldrb w30,[x21,x29]
+    strb w30,[x27,x28]
+    add x28,x28,#1
+    add x29,x29,#1
+    b extract_byte_loop3
+extract_done3:
+    strb wzr,[x27,x28]
+    str x27,[x24,#16]  ; 存第二个数字指针，把原来的 str x21 覆盖掉，或者你自己选位置
+
+
+
+    str x27,[x24,#24]
+
 
     str x24,[x23,x26,lsl #3]
 

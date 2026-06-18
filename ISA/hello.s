@@ -55,9 +55,27 @@ loop:
 
     mov x0,#0
     bl get_instr_addrs ;返回x0序列指令所储存的地址
-    bl get_instr_x0 ;输入是上一项的x0
-    
+    bl get_instr_0 ;输入是上一项的x0
 
+    bl print_newline
+
+    mov x0,#0
+    bl get_instr_addrs 
+    bl get_instr_1
+
+    bl print_newline
+
+    mov x0,#0
+    bl get_instr_addrs 
+    bl get_instr_2
+
+    bl print_newline
+
+    mov x0,#0
+    bl get_instr_addrs 
+    bl get_instr_3
+
+    bl print_newline
     ;bl test_write_memory
     ;bl test_write_read
     ;bl test_write
@@ -95,7 +113,7 @@ get_string_ptr_len_spaces_done:
     ldp x29, x30, [sp], #16
     ret
     
-get_instr_x0:
+get_instr_0:
     stp x29,x30,[sp,#-32]!
     stp x19,x20,[sp,#16]
     mov x20,x0
@@ -110,5 +128,71 @@ strlen_done:
     mov x0,#1
     bl sys_write
     ldp x19,x20,[sp,#16]
+    ldp x29,x30,[sp],#32
+    ret
+
+get_instr_1:
+    stp x29,x30,[sp,#-32]!
+    stp x19,x20,[sp,#16]
+    mov x20,x0
+    ldr x1,[x20,#8] ;取第一个参数地址
+    mov x2,#0         ; 长度计数器
+strlen_loop_1:
+    ldrb w3,[x1,x2]   ; 读取字节
+    cbz w3,strlen_done_1 ; 如果是0，结束
+    add x2,x2,#1      ; 否则长度+1
+    b strlen_loop_1
+strlen_done_1:
+    mov x0,#1
+    bl sys_write
+    ldp x19,x20,[sp,#16]
+    ldp x29,x30,[sp],#32
+    ret
+
+get_instr_2:
+    stp x29,x30,[sp,#-32]!
+    stp x19,x20,[sp,#16]
+    mov x20,x0
+    ldr x1,[x20,#16] ;取第一个参数地址
+    mov x2,#0         ; 长度计数器
+strlen_loop_2:
+    ldrb w3,[x1,x2]   ; 读取字节
+    cbz w3,strlen_done_2 ; 如果是0，结束
+    add x2,x2,#1      ; 否则长度+1
+    b strlen_loop_2
+strlen_done_2:
+    mov x0,#1
+    bl sys_write
+    ldp x19,x20,[sp,#16]
+    ldp x29,x30,[sp],#32
+    ret
+
+get_instr_3:
+    stp x29,x30,[sp,#-32]!
+    stp x19,x20,[sp,#16]
+    mov x20,x0
+    ldr x1,[x20,#24] ;取第一个参数地址
+    mov x2,#0         ; 长度计数器
+strlen_loop_3:
+    ldrb w3,[x1,x2]   ; 读取字节
+    cbz w3,strlen_done_3 ; 如果是0，结束
+    add x2,x2,#1      ; 否则长度+1
+    b strlen_loop_3
+strlen_done_3:
+    mov x0,#1
+    bl sys_write
+    ldp x19,x20,[sp,#16]
+    ldp x29,x30,[sp],#32
+    ret
+
+print_newline:
+    stp x29,x30,[sp,#-32]!
+    strb wzr,[sp,#16]      ; 清一下
+    mov w8,#10
+    strb w8,[sp,#16]       ; 存 '\n' (ASCII 10)
+    add x1,sp,#16          ; x1 = 缓冲区地址
+    mov x0,#1              ; x0 = 标准输出
+    mov x2,#1              ; x2 = 长度 1
+    bl sys_write
     ldp x29,x30,[sp],#32
     ret
