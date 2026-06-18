@@ -29,6 +29,7 @@ store_instr_addrs:
     mov x20,x1 ;第二个空格位置
     mov x21,x2 ;返回地址
     mov x22,x3 ;返回长度
+
     
     adrp x25, count_instr@PAGE
     add x25, x25, count_instr@PAGEOFF
@@ -39,17 +40,36 @@ store_instr_addrs:
     mov x0,#32
     bl memory_alloc
     mov x24,x0 ;内存分配数据区地址
+
     adrp x23, instr_addrs@PAGE          
     add x23, x23, instr_addrs@PAGEOFF ;存入instr_addrs指针
-    
-    str x19,[x24]
+
+parse_instr:
+    mov x0,x19
+    add x0,x0,#1
+    bl memory_alloc
+    mov x27,x0
+    mov x28,#0
+extract_byte_loop:
+    cmp x28,x19
+    b.ge extract_done
+    ldrb w29,[x21,x28]
+    strb w29,[x27,x28]
+    add x28,x28,#1
+    b extract_byte_loop
+extract_done:
+    strb wzr,[x27,x28]
+    str x27,[x24]
     str x20,[x24,#8]
     str x21,[x24,#16]
     str x22,[x24,#24]
+
     str x24,[x23,x26,lsl #3]
+
     mov w0,w26
     add w26,w26,#1
-    str w26,[x25]
+    str w26,[x25];指令序列计数自增
+
 instr_addrs_done:
     ldp x29,x30,[sp,#80]
     ldp x27,x28,[sp,#64]
@@ -73,3 +93,8 @@ get_instr_addrs_done:
     ldp x29,x30,[sp],#32
     ret
     
+
+
+;atoi：
+
+;execute_op：

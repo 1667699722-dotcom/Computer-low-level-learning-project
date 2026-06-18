@@ -57,7 +57,7 @@ print_index_strings:
 
     mov x0, #1
     stp x1, x2, [sp, #-16]! 
-    bl sys_write
+    ;bl sys_write
     ldp x1, x2, [sp], #16
 print_index_strings_done:
     ldp x29, x30, [sp], #16

@@ -14,8 +14,12 @@ memory_init:
     str w2, [x0,#4]  ;将寄存器 w2 的值存储到 x0 + 4 的内存地址
     ret
 memory_alloc:
-    stp x19,x20,[sp,#-32]!;预索引寻址把 x19 和 x20 存储到这个新地址
-    stp x21,x22,[sp,#16]  ;偏移寻址把 x21 和 x22 存储到这个地址
+    stp x19,x20,[sp,#-96]!
+    stp x21,x22,[sp,#16]
+    stp x23,x24,[sp,#32]
+    stp x25,x26,[sp,#48]
+    stp x27,x28,[sp,#64]
+    stp x29,x30,[sp,#80]
     mov x19,x0    ;存入请求分配的大小
     adrp x20, heap@PAGE          
     add x20, x20, heap@PAGEOFF ;存入heap指针
@@ -56,7 +60,12 @@ next_block:
 alloc_fail:
     mov x0,#0   ;
 alloc_done:
-    ldp x21, x22, [sp, #16]    ;退栈
-    ldp x19, x20, [sp], #32   ;退栈
+    ldp x29,x30,[sp,#80]
+    ldp x27,x28,[sp,#64]
+    ldp x25,x26,[sp,#48]
+    ldp x23,x24,[sp,#32]
+    ldp x21,x22,[sp,#16]
+    ldp x19,x20,[sp],#96
+
 alloc_done_flag:
     ret
