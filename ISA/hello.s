@@ -44,34 +44,34 @@ _main:
     bl memory_init 
     mov x19,#0
 loop:
-    mov x20,#0
+    mov x20,x19
     bl store_string
 
-    mov x20,#0
+    mov x20,x19
     bl get_string_ptr_len_spaces 
     ;x0第一个空格位置 x1返回第二个空格位置 x2返回地址 x3返回长度
 
     bl store_instr_addrs
 
-    mov x0,#0
+    mov x0,x19
     bl get_instr_addrs ;返回x0序列指令所储存的地址
     bl get_instr_0 ;输入是上一项的x0
 
     bl print_newline
 
-    mov x0,#0
+    mov x0,x19
     bl get_instr_addrs 
     bl get_instr_1
 
     bl print_newline
 
-    mov x0,#0
+    mov x0,x19
     bl get_instr_addrs 
     bl get_instr_2
 
     bl print_newline
 
-    mov x0,#0
+    mov x0,x19
     bl get_instr_addrs 
     bl get_instr_3
 
@@ -81,7 +81,7 @@ loop:
     ;bl test_write
 flag:
     add x19, x19, #1
-    cmp x19, #1
+    cmp x19, #2
     b.eq do_exit
     b loop  
  
