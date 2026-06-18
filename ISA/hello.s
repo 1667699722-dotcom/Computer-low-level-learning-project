@@ -1,11 +1,15 @@
 .include "src/memory.inc"  
 .data  ;数据区
-.align 4  ;
+.align 4  ;对齐到4字节边界
 
 .global heap
 .global heap_end
 .extern hello_msg
 .extern hello_len
+
+
+
+
 
 heap:                  ;堆内存的开始位置
     .space HEAP_SIZE   ;开辟一块长度为HEAP_SIZE的内存空间
@@ -34,6 +38,8 @@ output_buf:.space 256
 .extern store_ptr_done
 .extern print_index_strings
 .extern find_two_spaces
+.extern store_instr_addrs
+.extern get_instr_addrs
 _main:
     bl memory_init 
     mov x19,#0
@@ -45,8 +51,12 @@ loop:
     bl get_string_ptr_len_spaces 
     ;x0第一个空格位置 x1返回第二个空格位置 x2返回地址 x3返回长度
 
+    bl store_instr_addrs
 
-    
+    mov x0,#0
+    bl get_instr_addrs ;发挥x0序列指令所储存的地址
+
+
     ;bl test_write_memory
     ;bl test_write_read
     ;bl test_write
