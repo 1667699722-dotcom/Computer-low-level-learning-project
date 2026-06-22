@@ -1,4 +1,4 @@
-clang src/sort/heap_sort.c -g -o bin/sort
+clang src/stack/1.c -g -o bin/stack
 cat << 'PASS'
 
 ╔══════════════════════════════════════════╗
@@ -15,4 +15,4 @@ cat << 'PASS'
 ╚══════════════════════════════════════════╝
 
 PASS
- ./bin/sort
+ ./bin/stack
