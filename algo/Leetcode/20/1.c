@@ -10,6 +10,18 @@ typedef struct
     int capacity;
 }stack;
 
+bool isfull(stack* s)
+{
+    if(s->top==s->capacity-1)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
 void initstack(stack* s,int capacity)
 {
     s->data=(char*)malloc(capacity*sizeof(char));
@@ -18,11 +30,21 @@ void initstack(stack* s,int capacity)
 }
 void push(stack* s,char val)
 {
+    if(isfull(s))
+    {
+        printf("overflow\n");
+        return;  // 溢出时直接返回，不继续操作
+    }
     s->top++;
     s->data[s->top]=val;
 }
 char pop(stack* s)
 {
+    if(s->top==-1)
+    {
+        printf("underflow\n");
+        return '\0';  // 下溢时返回空字符
+    }
     char val=s->data[s->top];
     s->top--;
     return val;
@@ -32,6 +54,7 @@ void destory(stack* s)
 {
     free(s->data);
 }
+
 
 bool isempty(stack* s)
 {
