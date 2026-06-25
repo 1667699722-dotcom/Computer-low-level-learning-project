@@ -1,27 +1,23 @@
-.section .text
+.section .text.startup
 .global _start
 
 _start:
-    ldr x0, =0x09000000
-    ldr x1, =msg
+    ldr x0, =__stack_top
+    mov sp, x0
 
-print_loop:
-    ldrb w2, [x1], #1
-    cbz w2, halt
+    ldr x0, =__bss_start
+    ldr x1, =__bss_end
+    b clear_bss_loop
 
-wait_uart:
-    ldr w3, [x0, #0x18]
-    tbz w3, #5, write_char
-    b wait_uart
+clear_bss:
+    str xzr, [x0], #8
 
-write_char:
-    str w2, [x0]
-    b print_loop
+clear_bss_loop:
+    cmp x0, x1
+    b.lt clear_bss
+
+    bl kernel_main
 
 halt:
     wfe
     b halt
-
-.section .rodata
-msg:
-    .asciz "Hello QEMU AArch64 bare metal!\n"
