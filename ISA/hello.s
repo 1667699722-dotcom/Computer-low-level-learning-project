@@ -79,12 +79,14 @@ loop:
     ;bl test_write_memory
     ;bl test_write_read
     ;bl test_write
+    
 flag:
     add x19, x19, #1
     cmp x19, #2
     b.eq do_exit
     b loop  
  
+
 do_exit:
     b exit
 

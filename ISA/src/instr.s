@@ -99,6 +99,10 @@ extract_done3:
     strb wzr,[x27,x28]
     str x27,[x24,#16]  ; 存第二个数字指针，把原来的 str x21 覆盖掉，或者你自己选位置
 
+    
+
+
+
 
 
     str x27,[x24,#24]
@@ -136,5 +140,7 @@ get_instr_addrs_done:
 
 
 ;atoi：
+    ;stp x29,x30,[sp,#-32]!
+    ;stp x19,x20,[sp,#16]
 
 ;execute_op：
