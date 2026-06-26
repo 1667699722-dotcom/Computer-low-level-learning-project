@@ -1,0 +1,4 @@
+/Users/liuhuachao/Documents/Cline/408/QEMU/build/CMakeFiles/kernel.elf.dir
+/Users/liuhuachao/Documents/Cline/408/QEMU/build/CMakeFiles/run.dir
+/Users/liuhuachao/Documents/Cline/408/QEMU/build/CMakeFiles/edit_cache.dir
+/Users/liuhuachao/Documents/Cline/408/QEMU/build/CMakeFiles/rebuild_cache.dir
