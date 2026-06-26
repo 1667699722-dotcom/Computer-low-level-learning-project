@@ -29,6 +29,22 @@ void uart_puts(const char *s)
     }
 }
 
+void uart_put_hex(unsigned long val)
+{
+    int i;
+    int started = 0;
+    for (i = 28; i >= 0; i -= 4) {
+        int nibble = (val >> i) & 0xF;
+        if (nibble != 0 || started || i == 0) {
+            started = 1;
+            if (nibble < 10)
+                uart_putc('0' + nibble);
+            else
+                uart_putc('a' + nibble - 10);
+        }
+    }
+}
+
 
 
 void uart_gets(char *buf, int len)

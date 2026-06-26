@@ -22,5 +22,5 @@ done
 # 链接所有目标文件
 /opt/homebrew/opt/lld/bin/ld.lld -T linker.ld -nostdlib -o bin/kernel.elf bin/*.o
 
-# 运行
-qemu-system-aarch64 -machine virt -cpu cortex-a72 -m 64M -nographic -semihosting -kernel bin/kernel.elf
+# 运行：-kernel 方式，virtualization=on 让内核在 EL2 启动
+qemu-system-aarch64 -machine virt,virtualization=on -cpu cortex-a72 -m 64M -nographic -semihosting -kernel bin/kernel.elf

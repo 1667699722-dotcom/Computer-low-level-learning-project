@@ -15,7 +15,7 @@ clear_bss:
 clear_bss_loop:
     cmp x0, x1
     b.lt clear_bss
-
+    
     bl kernel_main
 
 halt:

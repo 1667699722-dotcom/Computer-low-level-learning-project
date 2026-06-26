@@ -11,6 +11,9 @@ SECTIONS
 
     .text : ALIGN(4K) {
         *(.text.startup)
+        
+        *(.text.exceptions)
+        
         *(.text)
     }
 
