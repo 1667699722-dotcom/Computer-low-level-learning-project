@@ -59,6 +59,7 @@ void peek(stack* s)
     }
     printf("peek %d\n",s->data[s->top]);
 }
+
 void destory(stack* s)
 {
     free(s->data);

@@ -1,4 +1,4 @@
-clang src/stack/1.c -g -o bin/stack
+clang Leetcode/622/1.c -g -o bin/queue
 #cat << 'PASS'
 
 #╔══════════════════════════════════════════╗
@@ -14,4 +14,4 @@ clang src/stack/1.c -g -o bin/stack
 #║   BUILD SUCCESSFUL -    launching ...    ║
 #╚══════════════════════════════════════════╝
 #PASS
- ./bin/stack
+ ./bin/queue
