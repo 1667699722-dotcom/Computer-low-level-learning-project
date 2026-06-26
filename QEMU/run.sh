@@ -4,6 +4,12 @@ mkdir -p bin
 # 编译汇编
 /opt/homebrew/opt/llvm/bin/clang --target=aarch64-none-elf -Wall -Wextra -g -c start.s -o bin/start.o
 
+# 编译 src/ASM 下所有汇编文件
+for file in src/ASM/*.s; do
+    filename=$(basename "$file" .s)
+    /opt/homebrew/opt/llvm/bin/clang --target=aarch64-none-elf -Wall -Wextra -g -c "$file" -o "bin/$filename.o"
+done
+
 # 编译 src/ 下所有 C 文件
 for file in src/*.c; do
     filename=$(basename "$file" .c)

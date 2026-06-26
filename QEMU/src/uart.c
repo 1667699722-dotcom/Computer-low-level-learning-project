@@ -16,6 +16,11 @@ void uart_putc(char c)
     while ((UART_FR & (1 << 5)) != 0);
     UART_DR = c;
 }
+char uart_getc()
+{
+    while ((UART_FR & (1 << 4)) != 0);
+    return (char)UART_DR;
+}
 
 void uart_puts(const char *s) 
 {
@@ -24,11 +29,7 @@ void uart_puts(const char *s)
     }
 }
 
-char uart_getc()
-{
-    while ((UART_FR & (1 << 4)) != 0);
-    return (char)UART_DR;
-}
+
 
 void uart_gets(char *buf, int len)
 {

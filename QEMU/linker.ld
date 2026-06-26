@@ -30,6 +30,9 @@ SECTIONS
     }
 
     . = ALIGN(4K);
+    heap = .;
+    . += 4096;
+    heap_end = .;
     __heap_start = .;
 
     __heap_end = ORIGIN(RAM) + LENGTH(RAM) - 16K;
