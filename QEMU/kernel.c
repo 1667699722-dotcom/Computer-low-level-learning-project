@@ -27,9 +27,15 @@ void kernel_main() {
     {
         uart_puts("Allocation failed!\n");
     }
+    // 释放内存
     my_free(ptr1);
 
 
+
+
+
+
+    
     // 导致内存泄漏
     //asm volatile(".word 0x00000000");
     // 退出内核

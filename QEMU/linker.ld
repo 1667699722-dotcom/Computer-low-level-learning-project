@@ -10,13 +10,18 @@ SECTIONS
     . = ORIGIN(RAM);
 
     .text : ALIGN(4K) {
-        *(.text.startup)
-        
-        *(.text.exceptions)
-        
-        *(.text)
+        *(.text.startup)     
     }
 
+    .exception_vector_table 0x40001000 : ALIGN(4K) {
+        *(.text.exceptions)   
+    }
+
+    .text : ALIGN(4K) {
+        *(.text)    
+    }    
+        
+        
     .rodata : ALIGN(4K) {
         *(.rodata)
         *(.rodata.*)

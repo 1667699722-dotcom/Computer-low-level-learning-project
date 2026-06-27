@@ -15,7 +15,7 @@ clear_bss:
 clear_bss_loop:
     cmp x0, x1
     b.lt clear_bss
-    
+    // 跳转到内核主函数
     bl kernel_main
 
 halt:

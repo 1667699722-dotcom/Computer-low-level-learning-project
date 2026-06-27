@@ -77,11 +77,12 @@ exception_handler:
 
     // 保存栈帧指针，确保栈16字节对齐（AArch64调用约定要求）
     sub sp, sp, #16
-
+    stp x29, x30, [sp] 
     // 读取异常寄存器并传递给C处理函数
     mrs x0, esr_el2
     mrs x1, elr_el2
     mrs x2, far_el2
+    ldp x29, x30, [sp] 
     bl c_exception_handler
 
     // 恢复栈
@@ -90,6 +91,7 @@ exception_handler:
     // 如果返回 != 0，是同步异常 - 跳过触发指令
     cmp x0, #0
     b.eq exception_return
+    //去下一个指令
     mrs x1, elr_el2
     add x1, x1, #4
     msr elr_el2, x1
