@@ -31,12 +31,14 @@ void kernel_main() {
     // 释放内存
     my_free(ptr1);
     page_init();
+    void *ptr2=page_alloc();
+    void *ptr3=page_alloc();
+    free_page(ptr2);
+    void *ptr4=page_alloc();
+    free_page(ptr3);
+    free_page(ptr4);
 
 
-
-
-
-    
     // 导致内存泄漏
     //asm volatile(".word 0x00000000");
     // 退出内核

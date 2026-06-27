@@ -14,6 +14,23 @@ static unsigned long total_pages;
 static unsigned long bitmap_pages;
 static unsigned long page_area_start;
 
+void test_page_init(unsigned long total_pages,unsigned long bitmap_pages,unsigned long page_area_start,unsigned long page_bitmap)
+{
+    uart_puts("Page frame manager initialized\n");
+    uart_puts("Total pages: ");
+    uart_put_hex(total_pages);
+    uart_puts("\n");
+    uart_puts("Bitmap pages: ");
+    uart_put_hex(bitmap_pages);
+    uart_puts("\n");
+    uart_puts("Page area start: ");
+    uart_put_hex(page_area_start);
+    uart_puts("\n");
+    uart_puts("Page bitmap start: ");
+    uart_put_hex(page_bitmap);
+    uart_puts("\n");
+}
+
 void page_init()
 {
     unsigned long start = (unsigned long)&__heap_start;
@@ -44,20 +61,45 @@ void page_init()
         unsigned long bit = p % 64;
         page_bitmap[ul] |= 1UL << bit;
     }
-    uart_puts("Page frame manager initialized\n");
-    uart_puts("Total pages: ");
-    uart_put_hex(total_pages);
-    uart_puts("\n");
-    uart_puts("Bitmap pages: ");
-    uart_put_hex(bitmap_pages);
-    uart_puts("\n");
-    uart_puts("Page area start: ");
-    uart_put_hex(page_area_start);
-    uart_puts("\n");
+    //test_page_init(total_pages,bitmap_pages,page_area_start,(unsigned long)page_bitmap); 
 }
 
-//void *page_alloc(){}
 
-//void free_page(void* page){}
+void *page_alloc(){
+    unsigned long p;
+    for(p=0;p<total_pages;p++)
+    {
+        unsigned long ul=p/64;
+        unsigned long bit=p%64;
+        if(!(page_bitmap[ul]&(1UL<<bit)))
+        {
+            page_bitmap[ul]|=(1UL<<bit);
+            uart_puts("Page bitmap ");
+            uart_put_hex(p);
+            uart_puts(":");
+            uart_put_hex(page_area_start+p*PAGE_SIZE);
+            uart_puts("\n");
+            return (void *)(page_area_start+p*PAGE_SIZE);
+        }
+    }
+    return NULL;
+}
+
+void free_page(void* page)
+{
+    if(page==NULL)
+    {
+        return;
+    }
+    unsigned long addr=(unsigned long)page;
+    if(addr<page_area_start || addr>=(unsigned long)&__heap_end)
+    {
+        return;
+    }
+    unsigned long p=(addr-page_area_start)/PAGE_SIZE;
+    unsigned long ul=p/64;
+    unsigned long bit=p%64;
+    page_bitmap[ul] &= ~(1UL << bit);
+}
 
 
