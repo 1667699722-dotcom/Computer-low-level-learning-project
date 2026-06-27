@@ -16,6 +16,10 @@ for file in src/*.c; do
     /opt/homebrew/opt/llvm/bin/clang --target=aarch64-none-elf -ffreestanding -fno-builtin -Wall -Wextra -g -Isrc/include -c "$file" -o "bin/$filename.o"
 done
 
+for file in src_1/*.c; do
+    filename=$(basename "$file" .c)
+    /opt/homebrew/opt/llvm/bin/clang --target=aarch64-none-elf -ffreestanding -fno-builtin -Wall -Wextra -g -Isrc/include -c "$file" -o "bin/$filename.o"
+done
 # 编译 kernel.c
 /opt/homebrew/opt/llvm/bin/clang --target=aarch64-none-elf -ffreestanding -fno-builtin -Wall -Wextra -g -Isrc/include -c kernel.c -o bin/kernel.o
 
