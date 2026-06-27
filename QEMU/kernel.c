@@ -4,6 +4,7 @@
 #include "src/include/memory.h"
 #include "src/include/exceptionhandler.h"
 #include "src_1/include/exceptionsolution.h"
+#include "src/include/page.h"
 #define INPUT_BUFFER_SIZE 64
 void kernel_main() {
     uart_init();
@@ -29,7 +30,7 @@ void kernel_main() {
     }
     // 释放内存
     my_free(ptr1);
-
+    page_init();
 
 
 

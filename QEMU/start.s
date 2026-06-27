@@ -1,5 +1,7 @@
 .section .text.startup
 .global _start
+.global __heap_start
+.global __heap_end
 
 _start:
     ldr x0, =__stack_top
