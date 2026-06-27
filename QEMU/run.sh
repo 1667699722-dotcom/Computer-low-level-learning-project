@@ -15,7 +15,7 @@ for file in src/*.c; do
     filename=$(basename "$file" .c)
     /opt/homebrew/opt/llvm/bin/clang --target=aarch64-none-elf -ffreestanding -fno-builtin -Wall -Wextra -g -Isrc/include -c "$file" -o "bin/$filename.o"
 done
-
+# 编译 src_1/ 下所有 C 文件
 for file in src_1/*.c; do
     filename=$(basename "$file" .c)
     /opt/homebrew/opt/llvm/bin/clang --target=aarch64-none-elf -ffreestanding -fno-builtin -Wall -Wextra -g -Isrc/include -c "$file" -o "bin/$filename.o"
