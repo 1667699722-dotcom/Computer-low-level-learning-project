@@ -1,125 +1,44 @@
-堆排序（Heapsort）把数组想象成一棵二叉树——
-这就是「堆」这个名字的来源。它不需要额外的数据结构，
-只在原数组上通过下标关系操作。
+% ============================================================================
+% 堆排序
+% ============================================================================
+\subsection{堆排序}
 
-\subsection{核心思路：把数组看成一棵二叉树}
+堆排序（Heapsort）利用堆这种数据结构来排序。堆是一个近似完全二叉树的结构，并同时满足堆积的性质：即子结点的键值或索引总是小于（或者大于）它的父节点。
 
-堆排序用一种巧妙的下标关系：
+\subsubsection{堆的基本操作}
 
+\textbf{父节点、左孩子、右孩子}：对于数组下标 \( i \)，我们有：
 \begin{itemize}
-    \item 节点 \texttt{i} 的\textbf{父节点}是 \texttt{i/2}
-    \item 节点 \texttt{i} 的\textbf{左孩子}是 \texttt{2*i}
-    \item 节点 \texttt{i} 的\textbf{右孩子}是 \texttt{2*i+1}
+    \item 父节点：\( \lfloor i/2 \rfloor \)
+    \item 左孩子：\( 2i \)
+    \item 右孩子：\( 2i+1 \)
 \end{itemize}
 
-这个映射不需要额外内存，只靠四则运算。
-注意它沿用了《算法导论》的\textbf{从 1 开始}的数组习惯——
-\texttt{A[0]} 通常放一个哨兵或被忽略。
+\textbf{Max-Heapify}：维护最大堆性质的关键操作。假设以 \( \text{Left}(i) \) 和 \( \text{Right}(i) \) 为根的两棵子树都是最大堆，但 \( A[i] \) 可能小于其孩子，这时候需要让 \( A[i] \) 在堆中"逐级下降"，从而使得以 \( i \) 为根的子树重新成为最大堆。
 
-一个\textbf{最大堆}满足：每个父节点 \verb|>=| 它的两个孩子，
-即 \texttt{A[Parent(i)] >= A[i]} 对所有 \texttt{i} 成立。
-这保证了根节点 \texttt{A[1]} 是整个堆中的最大值。
+\textbf{Build-Max-Heap}：将一个无序数组构造成最大堆。从最后一个非叶子节点（即 \( \lfloor n/2 \rfloor \)）开始，依次对每个节点调用 Max-Heapify。
 
-\subsection{C 代码 — 堆性质维护 Maxheapify}
-
-排序的核心是一个叫 \texttt{Maxheapify} 的函数：
-当下述三个节点中有节点违反最大堆性质时，
-把最大的元素\underline{换到}父节点位置，然后递归下去。
-
-\lstinputlisting[style=cstyle, firstline=18, lastline=38,
-    caption=algo/src/sort/heap\_sort.c — Maxheapify]
-{../algo/src/sort/heap_sort.c}
-
-它的工作方式可以概括为：
-
+\textbf{Heapsort}：
 \begin{enumerate}
-    \item 看当前节点 \texttt{i} 和它两个孩子里谁最大
-    \item 如果当前节点已经最大，什么也不做
-    \item 否则把当前节点和最大的那个孩子交换
-    \item 到被交换的那一侧递归调用 \texttt{Maxheapify}
+    \item 用 Build-Max-Heap 将输入数组构造成最大堆
+    \item 此时数组最大元素在根节点（\( A[1] \)）
+    \item 将它与最后一个元素交换，然后"去掉"这个元素（减小堆大小）
+    \item 对新的根节点调用 Max-Heapify
+    \item 重复步骤 3-4，直到堆大小减到 1
 \end{enumerate}
 
-因为每次最多下\emph{一层}，所以一棵有 \(n\) 个节点的树，
-深度最多 \(O(\log n)\)，每次调用 \texttt{Maxheapify} 的时间为 \(O(\log n)\)。
+\subsubsection{代码实现}
 
-\subsection{C 代码 — 建堆 BuildmaxHeap}
+完整的堆排序实现如下：
 
-建堆从\textbf{最后一个非叶节点}开始（也就是 \texttt{Parent(n)}），
-从后往前对每个节点调用 \texttt{Maxheapify}。
-这样保证在处理第 \texttt{i} 层时，\texttt{i+1} 层已经是堆。
+\lstinputlisting[style=cstyle, firstline=1, lastline=73]{../algo/src/sort/heap_sort.c}
 
-\lstinputlisting[style=cstyle, firstline=40, lastline=47,
-    caption=algo/src/sort/heap\_sort.c — BuildmaxHeap]
-{../algo/src/sort/heap_sort.c}
+\subsubsection{时间复杂度分析}
 
-为什么从 \texttt{Parent(n)} 开始而不是 \texttt{n}？
-因为超过 \texttt{Parent(n)} 的节点全都是\underline{叶子}，
-一个元素的堆本来就满足堆性质，不需要处理。
+\begin{itemize}
+    \item \textbf{Max-Heapify}：\( O(\lg n) \)
+    \item \textbf{Build-Max-Heap}：\( O(n) \)（虽然调用了 \( n/2 \) 次 Max-Heapify，但每次的高度不同，总时间是线性的）
+    \item \textbf{Heapsort}：\( O(n \lg n) \)（共 \( n-1 \) 次 Max-Heapify，每次 \( O(\lg n) \)）
+\end{itemize}
 
-\subsection{C 代码 — Heapsort 主函数}
-
-排序只需要：
-1. 把原数组建成最大堆
-2. 反复把根节点（最大值）换到数组末尾，
-   堆大小减 1，再从根节点维护堆性质
-
-\lstinputlisting[style=cstyle, firstline=48, lastline=60,
-    caption=algo/src/sort/heap\_sort.c — Heapsort]
-{../algo/src/sort/heap_sort.c}
-
-第 54--55 行的 \texttt{temp = A[1]; A[1] = A[i]; A[i] = temp;}
-就是\textbf{把根换到末尾}的操作，相当于
-把当前的最大值放到了它最终的有序位置。
-
-\subsection{C 代码 — 辅助函数与测试}
-
-三个索引计算函数很简单，但它们让排序逻辑语义清晰：
-
-\lstinputlisting[style=cstyle, firstline=1, lastline=17,
-    caption=algo/src/sort/heap\_sort.c — Parent/Leftchild/Rightchild]
-{../algo/src/sort/heap_sort.c}
-
-\subsection{C 代码 — main 测试程序}
-
-\lstinputlisting[style=cstyle, firstline=62, lastline=73,
-    caption=algo/src/sort/heap\_sort.c — main 测试]
-{../algo/src/sort/heap_sort.c}
-
-测试数组 \texttt{\{0,5,2,4,6,1,3,7,8\}} 中
-\texttt{A[0]=0} 被忽略（占位），对 \texttt{A[1..8]} 排序。
-注意 \texttt{sizeof(A)/sizeof(A[0]) - 1} 正好跳过了占位元素，
-得到有效长度 \texttt{n=8}。
-
-\subsection{时间复杂度}
-
-| 操作 | 一次调用 | 总次数 |
-|------|---------:|-------:|
-| \texttt{Maxheapify} | \(O(\log n)\) | \(O(n)\) 次在建堆阶段 + \(O(n)\) 次排序阶段 |
-| \texttt{BuildmaxHeap} | — | \(O(n)\)（紧界，不是 \(O(n \log n)\)！） |
-| \texttt{Heapsort} | — | \(O(n \log n)\) |
-
-为什么 \texttt{BuildmaxHeap} 是 \(O(n)\) 而不是 \(O(n \log n)\)？
-因为大部分节点在树的底部（叶子附近），\texttt{Maxheapify}
-在那些节点几乎立刻返回。精确求和：
-
-\[
-\sum_{h=0}^{\lfloor \log n \rfloor} \left\lceil \frac{n}{2^{h+1}} \right\rceil O(h)
-= O(n)
-\]
-
-而排序阶段每次从根维护堆，深度最大，因此是 \(O(n \log n)\)。
-
-\subsection{与其他排序的对比}
-
-\begin{tabular}{lcc}
-\hline
-算法 & 最坏时间 & 原地？ \\
-\hline
-插入排序 & \(O(n^2)\) & 是 \\
-归并排序 & \(O(n \log n)\) & 否（需要辅助数组） \\
-堆排序 & \(O(n \log n)\) & 是 \\
-\hline
-\end{tabular}
-
-堆排序在\textbf{最坏情况仍保证} \(O(n \log n)\)，
-同时只需要 \(O(1)\) 额外空间，这在嵌入式/资源受限场景很有用。
+堆排序是一种原址排序，最坏情况下也能达到 \( O(n \lg n) \) 的时间复杂度，是非常高效的比较排序算法。

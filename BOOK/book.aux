@@ -2,7 +2,7 @@
 \providecommand\hyper@newdestlabel[2]{}
 \providecommand*\HyPL@Entry[1]{}
 \HyPL@Entry{0<</S/D>>}
-\HyPL@Entry{5<</S/D>>}
+\HyPL@Entry{6<</S/D>>}
 \@writefile{toc}{\contentsline {chapter}{\numberline {1}项目介绍}{1}{chapter.1}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
@@ -115,109 +115,134 @@
 \@writefile{toc}{\contentsline {paragraph}{\texttt  {str w2, [x0]} — 发送字节}{34}{subsection.3.3.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.3.3}如果要从用户键盘接收数据}{34}{subsection.3.3.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.3.4}内存与硬件设备的区别}{34}{subsection.3.3.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {chapter}{\numberline {4}Verilog 芯片设计}{35}{chapter.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3.4}硬件资源概览}{34}{section.3.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3.5}内存管理}{35}{section.3.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.5.1}内存管理}{35}{subsection.3.5.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{汇编实现}{35}{subsection.3.5.1}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{../QEMU/src/ASM/memory.s}{35}{lstlisting.3.-1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{C 语言封装}{38}{lstnumber.-1.143}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{../QEMU/src/include/memory.h}{38}{lstlisting.3.-2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{工作原理}{38}{lstnumber.-2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3.6}异常处理}{38}{section.3.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.6.1}异常处理}{38}{subsection.3.6.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{异常向量表}{39}{subsection.3.6.1}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{../QEMU/src/ASM/exceptions.s}{39}{lstlisting.3.-3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{异常处理 C 函数}{41}{lstnumber.-3.119}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{../QEMU/src/exceptionhandler.c}{41}{lstlisting.3.-4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\texttt  {ESR\_EL2} 寄存器}{44}{lstnumber.-4.129}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{工作流程}{44}{lstnumber.-4.129}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3.7}后续路线图}{45}{section.3.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {4}Verilog 芯片设计}{46}{chapter.4}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\@writefile{toc}{\contentsline {section}{\numberline {4.1}Verilog 基本概念}{35}{section.4.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.1}软件和硬件的根本区别}{35}{subsection.4.1.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{并行 vs 顺序}{35}{subsection.4.1.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{两个基本类型}{35}{subsection.4.1.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.2}同步逻辑：时钟驱动一切}{35}{subsection.4.1.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.3}UART 通信的基本约定}{36}{subsection.4.1.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {4.2}adder.v：64 位字节加法器}{36}{section.4.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.1}设计目标}{36}{subsection.4.2.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.2}源码与讲解}{36}{subsection.4.2.2}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {4.1}Chip/src/adder.v}{36}{lstlisting.4.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{位提取与掩码}{37}{lstnumber.4.1.32}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{综合后会是什么样的硬件}{37}{lstnumber.4.1.32}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.3}一个更简洁的写法}{37}{subsection.4.2.3}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {4.2}用 generate 写的简化版本}{37}{lstlisting.4.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {4.3}uart\_tx.v：UART 发送器}{38}{section.4.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.1}设计目标}{38}{subsection.4.3.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.2}状态机设计}{38}{subsection.4.3.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.3}源码与讲解}{38}{subsection.4.3.3}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {4.3}Chip/src/uart\_tx.v}{38}{lstlisting.4.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{锁存为什么重要}{41}{lstnumber.-5.15}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{为什么 UART 空闲时 tx\_pin 必须为高}{41}{lstnumber.-5.15}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {4.4}uart\_rx.v：UART 接收器}{41}{section.4.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.1}设计目标}{41}{subsection.4.4.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.2}状态机设计}{42}{subsection.4.4.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.3}源码与关键思路讲解}{42}{subsection.4.4.3}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {4.4}Chip/src/uart\_rx.v}{42}{lstlisting.4.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{打两拍：跨时钟域的基本操作}{43}{lstnumber.4.4.29}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{状态转移逻辑：使用两个 always 块}{43}{lstnumber.-6.15}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{为什么在 S\_STOP 里只等半位}{44}{lstnumber.-7.42}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{数据与有效标志}{44}{lstnumber.-7.42}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{逐位接收}{44}{lstnumber.-8.17}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{中心采样的重要性}{45}{lstnumber.-9.20}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {4.5}综合到 FPGA：从代码到硬件}{45}{section.4.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.5.1}从 Verilog 到真实硬件的流程}{45}{subsection.4.5.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.5.2}u\_lite 程序如何加载到 FPGA 的指令存储器}{46}{subsection.4.5.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{方式 1：利用 Block RAM 初始化}{46}{subsection.4.5.2}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {4.5}BRAM 里嵌入机器码的模板}{46}{lstlisting.4.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{方式 2：通过 UART bootloader}{46}{lstnumber.4.5.12}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.5.3}和 QEMU 模拟的对应关系}{46}{subsection.4.5.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.5.4}为什么要做这种事}{47}{subsection.4.5.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {chapter}{\numberline {5}C 语言算法与数据结构}{48}{chapter.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4.1}Verilog 基本概念}{46}{section.4.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.1}软件和硬件的根本区别}{46}{subsection.4.1.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{并行 vs 顺序}{46}{subsection.4.1.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{两个基本类型}{46}{subsection.4.1.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.2}同步逻辑：时钟驱动一切}{46}{subsection.4.1.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.3}UART 通信的基本约定}{47}{subsection.4.1.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4.2}adder.v：64 位字节加法器}{47}{section.4.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.1}设计目标}{47}{subsection.4.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.2}源码与讲解}{47}{subsection.4.2.2}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {4.1}Chip/src/adder.v}{47}{lstlisting.4.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{位提取与掩码}{48}{lstnumber.4.1.32}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{综合后会是什么样的硬件}{48}{lstnumber.4.1.32}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.3}一个更简洁的写法}{48}{subsection.4.2.3}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {4.2}用 generate 写的简化版本}{48}{lstlisting.4.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4.3}uart\_tx.v：UART 发送器}{49}{section.4.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.1}设计目标}{49}{subsection.4.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.2}状态机设计}{49}{subsection.4.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.3}源码与讲解}{49}{subsection.4.3.3}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {4.3}Chip/src/uart\_tx.v}{49}{lstlisting.4.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{锁存为什么重要}{52}{lstnumber.-9.15}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{为什么 UART 空闲时 tx\_pin 必须为高}{52}{lstnumber.-9.15}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4.4}uart\_rx.v：UART 接收器}{52}{section.4.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.1}设计目标}{52}{subsection.4.4.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.2}状态机设计}{53}{subsection.4.4.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.3}源码与关键思路讲解}{53}{subsection.4.4.3}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {4.4}Chip/src/uart\_rx.v}{53}{lstlisting.4.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{打两拍：跨时钟域的基本操作}{54}{lstnumber.4.4.29}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{状态转移逻辑：使用两个 always 块}{54}{lstnumber.-10.15}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{为什么在 S\_STOP 里只等半位}{55}{lstnumber.-11.42}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{数据与有效标志}{55}{lstnumber.-11.42}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{逐位接收}{55}{lstnumber.-12.17}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{中心采样的重要性}{56}{lstnumber.-13.20}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4.5}综合到 FPGA：从代码到硬件}{56}{section.4.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5.1}从 Verilog 到真实硬件的流程}{56}{subsection.4.5.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5.2}u\_lite 程序如何加载到 FPGA 的指令存储器}{57}{subsection.4.5.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{方式 1：利用 Block RAM 初始化}{57}{subsection.4.5.2}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {4.5}BRAM 里嵌入机器码的模板}{57}{lstlisting.4.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{方式 2：通过 UART bootloader}{57}{lstnumber.4.5.12}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5.3}和 QEMU 模拟的对应关系}{57}{subsection.4.5.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5.4}为什么要做这种事}{58}{subsection.4.5.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4.6}与其他模块的关系}{58}{section.4.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {5}C 语言算法与数据结构}{59}{chapter.5}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\@writefile{toc}{\contentsline {section}{\numberline {5.1}本章讲什么}{48}{section.5.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {5.2}插入排序 — 逐个插入}{48}{section.5.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2.1}核心思路}{48}{subsection.5.2.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2.2}时间复杂度}{49}{subsection.5.2.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2.3}C 代码}{49}{subsection.5.2.3}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {5.1}algo/src/sort/inserton\_sort.c — 插入排序}{49}{lstlisting.5.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2.4}代码解读}{49}{subsection.5.2.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {5.3}归并排序 — 分治 + 逆序对}{50}{section.5.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.3.1}核心思路}{50}{subsection.5.3.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.3.2}时间复杂度}{50}{subsection.5.3.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.3.3}C 代码 — 合并函数}{51}{subsection.5.3.3}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {5.2}src/sort/merge\_sort.c — Merge 函数（含逆序对计数）}{51}{lstlisting.5.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.3.4}C 代码 — 递归排序函数与主程序}{52}{subsection.5.3.4}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {5.3}src/sort/merge\_sort.c — Mergesort 递归函数 + main}{52}{lstlisting.5.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.3.5}编译与运行}{52}{subsection.5.3.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {5.4}堆排序 — 把数组当二叉树}{53}{section.5.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.4.1}核心思路：把数组看成一棵二叉树}{53}{subsection.5.4.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.4.2}C 代码 — 堆性质维护 Maxheapify}{53}{subsection.5.4.2}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {5.4}algo/src/sort/heap\_sort.c — Maxheapify}{53}{lstlisting.5.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.4.3}C 代码 — 建堆 BuildmaxHeap}{54}{subsection.5.4.3}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {5.5}algo/src/sort/heap\_sort.c — BuildmaxHeap}{54}{lstlisting.5.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.4.4}C 代码 — Heapsort 主函数}{54}{subsection.5.4.4}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {5.6}algo/src/sort/heap\_sort.c — Heapsort}{54}{lstlisting.5.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.4.5}C 代码 — 辅助函数与测试}{55}{subsection.5.4.5}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {5.7}algo/src/sort/heap\_sort.c — Parent/Leftchild/Rightchild}{55}{lstlisting.5.7}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.4.6}C 代码 — main 测试程序}{55}{subsection.5.4.6}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {5.8}algo/src/sort/heap\_sort.c — main 测试}{55}{lstlisting.5.8}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.4.7}时间复杂度}{56}{subsection.5.4.7}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.4.8}与其他排序的对比}{56}{subsection.5.4.8}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {5.5}最大子数组 — 从暴力到分治}{56}{section.5.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.5.1}解法一：暴力枚举所有可能的子数组}{56}{subsection.5.5.1}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {5.9}algo/src/findmaximumsubarray/1.c — 暴力枚举法}{56}{lstlisting.5.9}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.5.2}解法二：分治法}{58}{subsection.5.5.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{跨中点的最大子数组 — \texttt  {findmaxcrossingsubarray}}{58}{Item.40}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {5.10}algo/src/findmaximumsubarray/2.c — 跨中点的查找}{58}{lstlisting.5.10}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{主递归函数}{59}{lstnumber.5.10.35}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {5.11}algo/src/findmaximumsubarray/2.c — findmaximumsubarray 递归函数}{59}{lstlisting.5.11}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{输入预处理和输出结果}{60}{lstnumber.5.11.26}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {5.12}algo/src/findmaximumsubarray/2.c — main，把股价转成差分数组}{60}{lstlisting.5.12}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.5.3}时间复杂度对比}{60}{subsection.5.5.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {5.6}矩阵乘法 — 二维分治}{61}{section.5.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.6.1}数据结构}{61}{subsection.5.6.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.6.2}C 代码 — 创建、释放、打印矩阵}{61}{subsection.5.6.2}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {5.13}algo/src/matrix/1.c — createMatrix / freeMatrix / printMatrix}{61}{lstlisting.5.13}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.6.3}C 代码 — 补零到 2 的幂次方}{62}{subsection.5.6.3}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {5.14}algo/src/matrix/1.c — nextpoweroftwo + padMatrix}{62}{lstlisting.5.14}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.6.4}C 代码 — 拆分、合并与矩阵加法}{63}{subsection.5.6.4}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {5.15}algo/src/matrix/1.c — combieMatrix / SplitMatrix / AddMatrix}{63}{lstlisting.5.15}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.6.5}C 代码 — 递归乘法主体}{64}{subsection.5.6.5}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {5.16}algo/src/matrix/1.c — SquareMatrixMultiply（分治法矩阵乘法）}{64}{lstlisting.5.16}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.6.6}C 代码 — 主程序验证}{66}{subsection.5.6.6}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {5.17}algo/src/matrix/1.c — main}{66}{lstlisting.5.17}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.6.7}从底层视角看矩阵乘法}{67}{subsection.5.6.7}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {5.7}从 C 代码到汇编 — 底层视角}{67}{section.5.7}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.7.1}函数调用 vs 栈操作}{67}{subsection.5.7.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.7.2}数组与指针 vs [base, index, shift]}{67}{subsection.5.7.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.7.3}结构体与内存对齐}{68}{subsection.5.7.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.7.4}从算法到硬件的路径}{68}{subsection.5.7.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{下一步可以做的事}{68}{subsection.5.7.4}\protected@file@percent }
-\gdef \@abspage@last{73}
+\@writefile{toc}{\contentsline {section}{\numberline {5.1}本章讲什么}{59}{section.5.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5.2}插入排序 — 逐个插入}{59}{section.5.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2.1}核心思路}{59}{subsection.5.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2.2}时间复杂度}{60}{subsection.5.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2.3}C 代码}{60}{subsection.5.2.3}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {5.1}algo/src/sort/inserton\_sort.c — 插入排序}{60}{lstlisting.5.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2.4}代码解读}{60}{subsection.5.2.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5.3}归并排序 — 分治 + 逆序对}{61}{section.5.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3.1}核心思路}{61}{subsection.5.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3.2}时间复杂度}{61}{subsection.5.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3.3}C 代码 — 合并函数}{62}{subsection.5.3.3}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {5.2}src/sort/merge\_sort.c — Merge 函数（含逆序对计数）}{62}{lstlisting.5.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3.4}C 代码 — 递归排序函数与主程序}{63}{subsection.5.3.4}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {5.3}src/sort/merge\_sort.c — Mergesort 递归函数 + main}{63}{lstlisting.5.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3.5}编译与运行}{63}{subsection.5.3.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5.4}堆排序 — 把数组当二叉树}{64}{section.5.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4.1}堆排序}{64}{subsection.5.4.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{堆的基本操作}{64}{subsection.5.4.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{代码实现}{64}{Item.53}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{../algo/src/sort/heap\textunderscore sort.c}{64}{lstlisting.5.-19}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{时间复杂度分析}{66}{lstnumber.-19.73}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5.5}最大子数组 — 从暴力到分治}{66}{section.5.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.5.1}解法一：暴力枚举所有可能的子数组}{66}{subsection.5.5.1}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {5.4}algo/src/findmaximumsubarray/1.c — 暴力枚举法}{66}{lstlisting.5.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.5.2}解法二：分治法}{68}{subsection.5.5.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{跨中点的最大子数组 — \texttt  {findmaxcrossingsubarray}}{68}{Item.56}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {5.5}algo/src/findmaximumsubarray/2.c — 跨中点的查找}{68}{lstlisting.5.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{主递归函数}{69}{lstnumber.5.5.35}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {5.6}algo/src/findmaximumsubarray/2.c — findmaximumsubarray 递归函数}{69}{lstlisting.5.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{输入预处理和输出结果}{70}{lstnumber.5.6.26}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {5.7}algo/src/findmaximumsubarray/2.c — main，把股价转成差分数组}{70}{lstlisting.5.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.5.3}时间复杂度对比}{70}{subsection.5.5.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5.6}矩阵乘法 — 二维分治}{71}{section.5.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.6.1}数据结构}{71}{subsection.5.6.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.6.2}C 代码 — 创建、释放、打印矩阵}{71}{subsection.5.6.2}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {5.8}algo/src/matrix/1.c — createMatrix / freeMatrix / printMatrix}{71}{lstlisting.5.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.6.3}C 代码 — 补零到 2 的幂次方}{72}{subsection.5.6.3}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {5.9}algo/src/matrix/1.c — nextpoweroftwo + padMatrix}{72}{lstlisting.5.9}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.6.4}C 代码 — 拆分、合并与矩阵加法}{73}{subsection.5.6.4}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {5.10}algo/src/matrix/1.c — combieMatrix / SplitMatrix / AddMatrix}{73}{lstlisting.5.10}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.6.5}C 代码 — 递归乘法主体}{74}{subsection.5.6.5}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {5.11}algo/src/matrix/1.c — SquareMatrixMultiply（分治法矩阵乘法）}{74}{lstlisting.5.11}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.6.6}C 代码 — 主程序验证}{76}{subsection.5.6.6}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {5.12}algo/src/matrix/1.c — main}{76}{lstlisting.5.12}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.6.7}从底层视角看矩阵乘法}{77}{subsection.5.6.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5.7}从 C 代码到汇编 — 底层视角}{77}{section.5.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.7.1}函数调用 vs 栈操作}{77}{subsection.5.7.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.7.2}数组与指针 vs [base, index, shift]}{77}{subsection.5.7.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.7.3}结构体与内存对齐}{78}{subsection.5.7.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.7.4}从算法到硬件的路径}{78}{subsection.5.7.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{下一步可以做的事}{78}{subsection.5.7.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {6}CUDA — 并行计算入门}{79}{chapter.6}\protected@file@percent }
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\@writefile{toc}{\contentsline {section}{\numberline {6.1}模块简介}{79}{section.6.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1.1}为什么需要 CUDA}{79}{subsection.6.1.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1.2}CUDA 编程模型简介}{79}{subsection.6.1.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6.2}学习重点}{80}{section.6.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2.1}线程层级结构}{80}{subsection.6.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2.2}Hello CUDA 示例}{80}{subsection.6.2.2}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{../CUDA/src/hello.cu}{80}{lstlisting.6.-25}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2.3}内存模型}{81}{subsection.6.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6.3}与项目其他模块的关系}{81}{section.6.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3.1}从底层到大规模并行}{81}{subsection.6.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3.2}CUDA 与汇编的对比}{82}{subsection.6.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3.3}与算法的关系}{82}{subsection.6.3.3}\protected@file@percent }
+\gdef \@abspage@last{88}

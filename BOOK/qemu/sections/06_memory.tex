@@ -1,0 +1,37 @@
+% ============================================================================
+% 内存管理
+% ============================================================================
+
+\subsection{内存管理}
+
+我们在裸机环境中实现了一个简单的内存分配器，支持分配和释放，还支持块合并。
+
+内存布局：
+- 每个内存块有 8 字节头部：
+  - 4 字节：块大小
+  - 4 字节：使用标记（0 未使用，1 已使用）
+- 堆大小：4096 字节
+
+内存分配器有三个函数：
+\begin{itemize}
+    \item \texttt{memory\_init}：初始化堆
+    \item \texttt{memory\_alloc}：分配内存
+    \item \texttt{memory\_free}：释放内存
+\end{itemize}
+
+\subsubsection{汇编实现}
+
+\lstinputlisting[style=asm]{../QEMU/src/ASM/memory.s}
+
+\subsubsection{C 语言封装}
+
+C 语言中有对汇编函数的声明：
+
+\lstinputlisting[style=cstyle]{../QEMU/src/include/memory.h}
+
+\subsubsection{工作原理}
+\begin{enumerate}
+    \item \texttt{memory\_init}：初始化堆，第一个块大小设为 4088 字节（4096 - 8 字节头部）
+    \item \texttt{memory\_alloc}：首次适配算法，找到足够大的空闲块
+    \item \texttt{memory\_free}：释放内存并尝试与相邻空闲块合并
+\end{enumerate}

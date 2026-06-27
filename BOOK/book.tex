@@ -31,6 +31,7 @@
 % ---- 代码高亮（listings，不需要外部依赖）----
 \usepackage{listings}
 \usepackage{xcolor}
+\usepackage{pagecolor}
 \lstset{
     basicstyle=\ttfamily\footnotesize,
     numbers=left,
@@ -112,36 +113,17 @@
 \newcommand{\code}[1]{\texttt{#1}}
 
 % ============================================================================
-% 标题信息
-% ============================================================================
-\title{从比特到智能}
-\author{Liuhuachao \\
-\small \texttt{liuhuachaohaha@gmail.com}}
-\date{\today}
-
-% ============================================================================
 % Document
 % ============================================================================
 \begin{document}
-
 % ---- 封面 ----
 \thispagestyle{empty}
-\vspace*{\stretch{1}}
-
-\begin{center}
-    {\Large\itshape  From Bits to Intelligence}\\[0.8cm]
-    {\fontsize{52}{62}\selectfont\bfseries 从比特到智能}\\[0.8cm]
-    {\Large 芯片 \(\cdot\) 系统 \(\cdot\) 算法 \(\cdot\) AI}\\[1.5cm]
-
-    \rule{10cm}{0.8pt}\\[1.5cm]
-
-    {\large Liuhuachao}\\[0.3cm]
-    {\small\ttfamily liuhuachaohaha@gmail.com}\\[0.5cm]
-    {\small\itshape \today}
-\end{center}
-
-\vspace*{\stretch{2}}
+\advance\hoffset by -1in
+\advance\voffset by -1in
+\noindent\includegraphics[width=\paperwidth,height=\paperheight]{image.png}
 \clearpage
+\advance\hoffset by 1in
+\advance\voffset by 1in
 
 % ---- 目录 ----
 \tableofcontents
@@ -174,5 +156,10 @@
 % 第 5 章：C 语言算法与数据结构
 % ============================================================================
 \input{algo/main}
+
+% ============================================================================
+% 第 6 章：CUDA 并行计算
+% ============================================================================
+\input{cuda/main}
 
 \end{document}
