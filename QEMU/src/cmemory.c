@@ -6,6 +6,7 @@ typedef unsigned long size_t;
 #include "include/cmemory.h"
 
 typedef struct{
+    unsigned int presize;
     unsigned int size;
     unsigned int used;
 }block_header_t;
@@ -43,6 +44,7 @@ static int extend_cmemory(size_t needed_size)
         block_header_t *header=(block_header_t *)region->start;
         header->size=region->end-region->start-sizeof(block_header_t);
         header->used=0;
+        header->presize=0;
     }
     return 0;
 }
@@ -70,6 +72,7 @@ void* cmemory_alloc(int size)
                     block_header_t *next_header=(block_header_t*)((char*)header+sizeof(block_header_t)+size);
                     next_header->size=remaining;
                     next_header->used=0;
+                    next_header->presize=header->size;
                     header->size=size;
                 }
                 header->used=1;
@@ -92,7 +95,36 @@ void cmemory_free(void *ptr)
     block_header_t *header = (block_header_t *)((char *)ptr - sizeof(block_header_t));
     header->used = 0;
     
+    unsigned long page_addr = (unsigned long)header & ~(PAGE_SIZE - 1);
+    mem_region_t *region = (mem_region_t *)page_addr;
     // 这里可以添加块合并逻辑
     // （为了简化，先不实现合并）
+    block_header_t * next_header=(block_header_t*)((char*)header+sizeof(block_header_t)+header->size);
+    if((void*)next_header<region->end && !next_header->used)
+    {
+        header->size+=sizeof(block_header_t)+next_header->size;
+        block_header_t *next_next_header = (block_header_t *)((char *)header + sizeof(block_header_t) + header->size);
+        if((void*)next_next_header < region->end)
+        {
+            next_next_header->presize = header->size;
+        }
+    }
+
+    
+    if(header->presize>0)
+    {
+        block_header_t *prev_header = (block_header_t *)((char *)header - sizeof(block_header_t) - header->presize);
+        if (!prev_header->used)
+        {
+            prev_header->size += sizeof(block_header_t) + header->size;
+            
+            // 更新下一个块的 presize（用 prev_header）
+            block_header_t *new_next_header = (block_header_t *)((char *)prev_header + sizeof(block_header_t) + prev_header->size);
+            if((void*)new_next_header < region->end)
+            {
+                new_next_header->presize = prev_header->size;
+            }
+        }
+    }
 }
 
