@@ -5,6 +5,7 @@
 #include "src/include/exceptionhandler.h"
 #include "src_1/include/exceptionsolution.h"
 #include "src/include/page.h"
+#include "src/include/cmemory.h"
 #define INPUT_BUFFER_SIZE 64
 void kernel_main() {
     uart_init();
@@ -37,6 +38,25 @@ void kernel_main() {
     void *ptr4=page_alloc();
     free_page(ptr3);
     free_page(ptr4);
+
+    cmemory_init();
+
+    void *ptr5=cmemory_alloc(2342);
+    uart_puts("cmemory_alloc address:");
+    uart_put_hex((unsigned long)ptr5);
+    uart_puts("\n");
+    void *ptr6=cmemory_alloc(242);
+    uart_puts("cmemory_alloc address:");
+    uart_put_hex((unsigned long)ptr6);
+    uart_puts("\n");
+    void *ptr7=cmemory_alloc(3467);
+    uart_puts("cmemory_alloc address:");
+    uart_put_hex((unsigned long)ptr7);
+    uart_puts("\n");
+    cmemory_free(ptr5);
+    cmemory_free(ptr6);
+    cmemory_free(ptr7);
+    
 
 
     // 导致内存泄漏
