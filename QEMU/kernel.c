@@ -41,7 +41,7 @@ void kernel_main() {
     //free_page(ptr4);
     cmemory_init();
 
-    void *ptr5=cmemory_alloc(2742);
+    void *ptr5=cmemory_alloc(2142);
     uart_puts("cmemory_alloc address:");
     uart_put_hex((unsigned long)ptr5);
     uart_puts("\n");
@@ -51,13 +51,13 @@ void kernel_main() {
     uart_put_hex((unsigned long)ptr6);
     uart_puts("\n");
     
-    
+    cmemory_free(ptr5);
+
     void *ptr7=cmemory_alloc(2267);
     uart_puts("cmemory_alloc address:");
     uart_put_hex((unsigned long)ptr7);
     uart_puts("\n");
-    
-    cmemory_free(ptr5);
+
     cmemory_free(ptr6);
     cmemory_free(ptr7);
     

@@ -1,5 +1,6 @@
+
 #define PAGE_SIZE 4096
-typedef unsigned long size_t; 
+typedef unsigned long size_t;
 #define NULL ((void *)0)
 
 #include "include/page.h"
@@ -125,6 +126,11 @@ void cmemory_free(void *ptr)
                 new_next_header->presize = prev_header->size;
             }
         }
+    }
+    block_header_t *page_first_header = (block_header_t *)region->start;
+    if(page_first_header->used == 0 && page_first_header->size == (unsigned long)region->end - (unsigned long)region->start - sizeof(block_header_t))
+    {
+        free_page((void *)page_addr);
     }
 }
 
