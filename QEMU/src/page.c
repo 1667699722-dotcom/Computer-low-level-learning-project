@@ -61,7 +61,7 @@ void page_init()
         unsigned long bit = p % 64;
         page_bitmap[ul] |= 1UL << bit;
     }
-    test_page_init(total_pages,bitmap_pages,page_area_start,(unsigned long)page_bitmap); 
+    //test_page_init(total_pages,bitmap_pages,page_area_start,(unsigned long)page_bitmap); 
 }
 
 

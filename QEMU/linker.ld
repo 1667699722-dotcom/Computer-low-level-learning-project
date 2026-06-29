@@ -43,7 +43,7 @@ SECTIONS
     heap_end = .;
     __heap_start = .;
     
-    __heap_end = ORIGIN(RAM) + LENGTH(RAM) - 32K;
+    __heap_end = ORIGIN(RAM) + LENGTH(RAM) - 128K;
     . = ALIGN(16);
     __stack_top = .;
 
