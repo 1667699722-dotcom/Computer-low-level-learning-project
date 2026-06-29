@@ -41,25 +41,55 @@ void kernel_main() {
     //free_page(ptr4);
     cmemory_init();
 
-    void *ptr5=cmemory_alloc(2142);
-    uart_puts("cmemory_alloc address:");
-    uart_put_hex((unsigned long)ptr5);
-    uart_puts("\n");
-
-    void *ptr6=cmemory_alloc(242);
-    uart_puts("cmemory_alloc address:");
-    uart_put_hex((unsigned long)ptr6);
-    uart_puts("\n");
-    
-    cmemory_free(ptr5);
-
-    void *ptr7=cmemory_alloc(2267);
-    uart_puts("cmemory_alloc address:");
-    uart_put_hex((unsigned long)ptr7);
-    uart_puts("\n");
-
-    cmemory_free(ptr6);
-    cmemory_free(ptr7);
+    // uart_puts("=== Memory Allocator Test Start ===\n");
+    // uart_puts("\n--- Test 1: Basic Allocation ---");
+    // void *ptr1 = cmemory_alloc(100);
+    // uart_puts("\nptr1 (100 bytes): ");
+    // uart_put_hex((unsigned long)ptr1);
+    // void *ptr2 = cmemory_alloc(200);
+    // uart_puts("\nptr2 (200 bytes): ");
+    // uart_put_hex((unsigned long)ptr2);
+    // void *ptr3 = cmemory_alloc(300);
+    // uart_puts("\nptr3 (300 bytes): ");
+    // uart_put_hex((unsigned long)ptr3);
+    // uart_puts("\n--- Test 2: Free and Reuse ---");
+    // cmemory_free(ptr2);
+    // uart_puts("\nFreed ptr2");
+    // void *ptr4 = cmemory_alloc(150);
+    // uart_puts("\nptr4 (150 bytes): ");
+    // uart_put_hex((unsigned long)ptr4);
+    // uart_puts("\n--- Test 3: Multiple Pages ---");
+    // void *ptr5 = cmemory_alloc(4000);
+    // uart_puts("\nptr5 (4000 bytes): ");
+    // uart_put_hex((unsigned long)ptr5);
+    // void *ptr6 = cmemory_alloc(4000);
+    // uart_puts("\nptr6 (4000 bytes): ");
+    // uart_put_hex((unsigned long)ptr6);
+    // uart_puts("\n--- Test 4: Coalescing ---");
+    // cmemory_free(ptr1);
+    // cmemory_free(ptr3);
+    // cmemory_free(ptr4);
+    // uart_puts("\nFreed ptr1, ptr3, ptr4");
+    // void *ptr7 = cmemory_alloc(500);
+    // uart_puts("\nptr7 (500 bytes): ");
+    // uart_put_hex((unsigned long)ptr7);
+    // uart_puts("\n--- Test 5: Edge Cases ---");
+    // void *ptr8 = cmemory_alloc(0);
+    // uart_puts("\nptr8 (0 bytes): ");
+    // uart_put_hex((unsigned long)ptr8);
+    // void *ptr9 = cmemory_alloc(8);
+    // uart_puts("\nptr9 (8 bytes): ");
+    // uart_put_hex((unsigned long)ptr9);
+    // void *ptr10 = cmemory_alloc(1);
+    // uart_puts("\nptr10 (1 byte): ");
+    // uart_put_hex((unsigned long)ptr10);
+    // uart_puts("\n--- Cleanup ---");
+    // cmemory_free(ptr5);
+    // cmemory_free(ptr6);
+    // cmemory_free(ptr7);
+    // cmemory_free(ptr9);
+    // cmemory_free(ptr10);
+    // uart_puts("\n=== Memory Allocator Test End ===\n");
     
 
     // 导致内存泄漏

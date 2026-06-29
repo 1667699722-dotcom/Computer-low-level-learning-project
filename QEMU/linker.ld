@@ -42,8 +42,11 @@ SECTIONS
     . += 4096;
     heap_end = .;
     __heap_start = .;
-
+    
     __heap_end = ORIGIN(RAM) + LENGTH(RAM) - 32K;
     . = ALIGN(16);
     __stack_top = .;
+
+    __vheap_start = 0x50000000;
+    __vheap_end = 0x58000000;
 }

@@ -61,12 +61,13 @@ void page_init()
         unsigned long bit = p % 64;
         page_bitmap[ul] |= 1UL << bit;
     }
-    //test_page_init(total_pages,bitmap_pages,page_area_start,(unsigned long)page_bitmap); 
+    test_page_init(total_pages,bitmap_pages,page_area_start,(unsigned long)page_bitmap); 
 }
 
 
 void *page_alloc(){
     unsigned long p;
+    unsigned long start = (unsigned long)&__heap_start;
     for(p=0;p<total_pages;p++)
     {
         unsigned long ul=p/64;
@@ -74,14 +75,17 @@ void *page_alloc(){
         if(!(page_bitmap[ul]&(1UL<<bit)))
         {
             page_bitmap[ul]|=(1UL<<bit);
-            uart_puts("Page bitmap ");
-            uart_put_hex(p);
-            uart_puts(":");
-            uart_put_hex(page_area_start+p*PAGE_SIZE);
-            uart_puts("\n");
-            return (void *)(page_area_start+p*PAGE_SIZE);
+            //uart_puts("Page bitmap ");
+            //uart_put_hex(p);
+            //uart_puts(":");
+            //uart_put_hex(start+p*PAGE_SIZE);
+            //uart_put_hex(start);
+            //uart_puts("\n");
+            return (void *)(start+p*PAGE_SIZE);
         }
     }
+    //uart_put_hex(start+p);
+    //uart_puts("\n");
     return NULL;
 }
 
@@ -92,11 +96,12 @@ void free_page(void* page)
         return;
     }
     unsigned long addr=(unsigned long)page;
-    if(addr<page_area_start || addr>=(unsigned long)&__heap_end)
+    unsigned long start=(unsigned long)&__heap_start;
+    if(addr<start || addr>=(unsigned long)&__heap_end)
     {
         return;
     }
-    unsigned long p=(addr-page_area_start)/PAGE_SIZE;
+    unsigned long p=(addr-start)/PAGE_SIZE;
     unsigned long ul=p/64;
     unsigned long bit=p%64;
     page_bitmap[ul] &= ~(1UL << bit);

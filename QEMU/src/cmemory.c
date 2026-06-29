@@ -28,11 +28,20 @@ static int extend_cmemory(size_t needed_size)
 {
     size_t pages_needed = (needed_size + sizeof(block_header_t) 
     + PAGE_SIZE - 1) / PAGE_SIZE;
+    mem_region_t *old_regions = mem_regions;
     for(size_t i=0;i<pages_needed;i++)
     {
         void *page=page_alloc();
         if(!page)
         {
+            mem_region_t *curr = mem_regions;
+            while(curr != old_regions)
+            {
+                mem_region_t *next = curr->next;
+                free_page((void *)curr);
+                curr = next;
+            }
+            mem_regions = old_regions;
             return -1;
         }
 
@@ -52,7 +61,7 @@ static int extend_cmemory(size_t needed_size)
 
 void* cmemory_alloc(int size)
 {
-    if(size<=0)
+    if(size<=0 || size>(int)(PAGE_SIZE-sizeof(mem_region_t)-sizeof(block_header_t)))
     {
         return NULL;
     }
@@ -130,6 +139,18 @@ void cmemory_free(void *ptr)
     block_header_t *page_first_header = (block_header_t *)region->start;
     if(page_first_header->used == 0 && page_first_header->size == (unsigned long)region->end - (unsigned long)region->start - sizeof(block_header_t))
     {
+        mem_region_t **prev_ptr = &mem_regions;
+        mem_region_t *curr = mem_regions;
+        while(curr)
+        {
+            if(curr == region)
+            {
+                *prev_ptr = curr->next;
+                break;
+            }
+            prev_ptr = &curr->next;
+            curr = curr->next;
+        }
         free_page((void *)page_addr);
     }
 }
