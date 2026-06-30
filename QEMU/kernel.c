@@ -6,6 +6,7 @@
 #include "src_1/include/exceptionsolution.h"
 #include "src/include/page.h"
 #include "src/include/cmemory.h"
+#include "src/include/virtio.h"
 #define INPUT_BUFFER_SIZE 64
 void kernel_main() {
     uart_init();
@@ -41,6 +42,7 @@ void kernel_main() {
     //free_page(ptr4);
     cmemory_init();
 
+    virtio_blk_init();
     // uart_puts("=== Memory Allocator Test Start ===\n");
     // uart_puts("\n--- Test 1: Basic Allocation ---");
     //void *ptr1 = cmemory_alloc(4050);
@@ -90,7 +92,38 @@ void kernel_main() {
     // cmemory_free(ptr9);
     // cmemory_free(ptr10);
     // uart_puts("\n=== Memory Allocator Test End ===\n");
-    
+    uint8_t write_buf[512];
+    for (int i = 0; i < 512; i++) {
+        write_buf[i] = i & 0xFF;
+    }
+    uart_puts("Writing sector 0...\n");
+    if (virtio_blk_write(0, write_buf) == 0) {
+        uart_puts("Write success!\n");
+    } else {
+        uart_puts("Write failed!\n");
+    }
+
+    // 测试读扇区 0
+    uint8_t read_buf[512];
+    uart_puts("Reading sector 0...\n");
+    if (virtio_blk_read(0, read_buf) == 0) {
+        uart_puts("Read success!\n");
+        // 验证数据
+        int ok = 1;
+        for (int i = 0; i < 512; i++) {
+            if (read_buf[i] != (i & 0xFF)) {
+                ok = 0;
+                break;
+            }
+        }
+        if (ok) {
+            uart_puts("Data verification success!\n");
+        } else {
+            uart_puts("Data verification failed!\n");
+        }
+    } else {
+        uart_puts("Read failed!\n");
+    }
 
     // 导致内存泄漏
     //asm volatile(".word 0x00000000");
