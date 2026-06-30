@@ -43,9 +43,9 @@ void kernel_main() {
 
     // uart_puts("=== Memory Allocator Test Start ===\n");
     // uart_puts("\n--- Test 1: Basic Allocation ---");
-    // void *ptr1 = cmemory_alloc(100);
-    // uart_puts("\nptr1 (100 bytes): ");
-    // uart_put_hex((unsigned long)ptr1);
+    //void *ptr1 = cmemory_alloc(4050);
+    // uart_puts("\nptr1 : ");
+    //uart_put_hex((unsigned long)ptr1);
     // void *ptr2 = cmemory_alloc(200);
     // uart_puts("\nptr2 (200 bytes): ");
     // uart_put_hex((unsigned long)ptr2);

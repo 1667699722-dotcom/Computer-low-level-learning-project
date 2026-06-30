@@ -93,7 +93,12 @@ void* cmemory_alloc(int size)
         region=region->next;
     }
     if (extend_cmemory(size) == 0)
+    {
         return cmemory_alloc(size);
+    } 
+    else if (extend_cmemory(size) == -1) {
+        return NULL;
+    }
     return NULL;
 }
 
