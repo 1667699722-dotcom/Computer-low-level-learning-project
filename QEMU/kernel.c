@@ -17,19 +17,31 @@ void kernel_main() {
     // 初始化内存
     memory_init();  
     
-    // char *ptr1 = (char *)my_malloc(INPUT_BUFFER_SIZE*sizeof(char));
-    // if (ptr1) 
-    // {
-    //     uart_puts("Enter text (max 63 chars): ");
-    //     uart_gets((char *)ptr1, INPUT_BUFFER_SIZE*sizeof(char));
-    //     uart_puts("You entered: ");
-    //     uart_puts((char *)ptr1);
-    //     uart_puts("\n");
-    // }
-    // else 
-    // {
-    //     uart_puts("Allocation failed!\n");
-    // }
+    char *ptr1 = (char *)my_malloc(INPUT_BUFFER_SIZE*sizeof(char));
+    char *ptr2 = (char *)my_malloc(INPUT_BUFFER_SIZE*sizeof(char));
+    if (ptr1) 
+    {
+        uart_puts("Enter text (max 63 chars): ");
+        uart_gets((char *)ptr1, INPUT_BUFFER_SIZE*sizeof(char));
+        uart_puts("You entered: ");
+        uart_puts((char *)ptr1);
+        uart_puts("\n");
+        my_memset(ptr1,100 ,5);
+        uart_puts("revised: ");
+        uart_puts((char *)ptr1);
+        uart_puts("\n");
+        uart_puts("ptr2: ");
+        uart_puts((char *)my_strncpy(ptr2, ptr1, 4));
+        uart_puts("\n");
+        uart_put_dec(my_strcmp(ptr1, ptr2));
+        uart_puts("\n");
+        uart_put_dec(my_strlen(ptr2));
+        uart_puts("\n");
+    }
+    else 
+    {
+        uart_puts("Allocation failed!\n");
+    }
 
     page_init();
     // 释放内存
@@ -42,7 +54,8 @@ void kernel_main() {
     //free_page(ptr4);
     cmemory_init();
 
-    virtio_blk_init();
+    
+
     // uart_puts("=== Memory Allocator Test Start ===\n");
     // uart_puts("\n--- Test 1: Basic Allocation ---");
     //void *ptr1 = cmemory_alloc(4050);
@@ -92,39 +105,15 @@ void kernel_main() {
     // cmemory_free(ptr9);
     // cmemory_free(ptr10);
     // uart_puts("\n=== Memory Allocator Test End ===\n");
-    uint8_t write_buf[512];
-    for (int i = 0; i < 512; i++) {
-        write_buf[i] = i & 0xFF;
-    }
-    uart_puts("Writing sector 0...\n");
-    if (virtio_blk_write(0, write_buf) == 0) {
-        uart_puts("Write success!\n");
-    } else {
-        uart_puts("Write failed!\n");
-    }
-
-    // 测试读扇区 0
-    uint8_t read_buf[512];
-    uart_puts("Reading sector 0...\n");
-    if (virtio_blk_read(0, read_buf) == 0) {
-        uart_puts("Read success!\n");
-        // 验证数据
-        int ok = 1;
-        for (int i = 0; i < 512; i++) {
-            if (read_buf[i] != (i & 0xFF)) {
-                ok = 0;
-                break;
-            }
-        }
-        if (ok) {
-            uart_puts("Data verification success!\n");
-        } else {
-            uart_puts("Data verification failed!\n");
-        }
-    } else {
-        uart_puts("Read failed!\n");
-    }
-
+    
+    //virtio_blk_init();
+    // uint8_t write_buf[512];
+    // for (int i = 0; i < 512; i++) {write_buf[i] = i & 0xFF;}
+    // virtio_blk_write(0, write_buf);
+    // uint8_t read_buf[512];
+    // virtio_blk_read(0, read_buf);
+    
+    
     // 导致内存泄漏
     //asm volatile(".word 0x00000000");
     // 退出内核
