@@ -7,7 +7,12 @@
 #include "src/include/page.h"
 #include "src/include/cmemory.h"
 #include "src/include/virtio.h"
+#include "src/include/fs.h"
+
+uint8_t test_data1[] = "Hello, this is a test file!";
+uint8_t test_data2[] = "Hello, that is a test file!jaja";
 #define INPUT_BUFFER_SIZE 64
+
 void kernel_main() {
     uart_init();
     // 初始化UART
@@ -15,34 +20,9 @@ void kernel_main() {
     // 读取当前EL
     //read_current_el();
     // 初始化内存
+
     memory_init();  
     
-    char *ptr1 = (char *)my_malloc(INPUT_BUFFER_SIZE*sizeof(char));
-    char *ptr2 = (char *)my_malloc(INPUT_BUFFER_SIZE*sizeof(char));
-    if (ptr1) 
-    {
-        uart_puts("Enter text (max 63 chars): ");
-        uart_gets((char *)ptr1, INPUT_BUFFER_SIZE*sizeof(char));
-        uart_puts("You entered: ");
-        uart_puts((char *)ptr1);
-        uart_puts("\n");
-        my_memset(ptr1,100 ,5);
-        uart_puts("revised: ");
-        uart_puts((char *)ptr1);
-        uart_puts("\n");
-        uart_puts("ptr2: ");
-        uart_puts((char *)my_strncpy(ptr2, ptr1, 4));
-        uart_puts("\n");
-        uart_put_dec(my_strcmp(ptr1, ptr2));
-        uart_puts("\n");
-        uart_put_dec(my_strlen(ptr2));
-        uart_puts("\n");
-    }
-    else 
-    {
-        uart_puts("Allocation failed!\n");
-    }
-
     page_init();
     // 释放内存
     //my_free(ptr1);
@@ -52,9 +32,34 @@ void kernel_main() {
     //void *ptr4=page_alloc();
     //free_page(ptr3);
     //free_page(ptr4);
+
     cmemory_init();
 
-    
+    // char *ptr1 = (char *)cmemory_alloc(INPUT_BUFFER_SIZE*sizeof(char));
+    // char *ptr2 = (char *)cmemory_alloc(INPUT_BUFFER_SIZE*sizeof(char));
+    // if (ptr1) 
+    // {
+    //     uart_puts("Enter text (max 63 chars): ");
+    //     uart_gets((char *)ptr1, INPUT_BUFFER_SIZE*sizeof(char));
+    //     uart_puts("You entered: ");
+    //     uart_puts((char *)ptr1);
+    //     uart_puts("\n");
+    //     my_memset(ptr1,100 ,5);
+    //     uart_puts("revised: ");
+    //     uart_puts((char *)ptr1);
+    //     uart_puts("\n");
+    //     uart_puts("ptr2: ");
+    //     uart_puts((char *)my_strncpy(ptr2, ptr1, 4));
+    //     uart_puts("\n");
+    //     uart_put_dec(my_strcmp(ptr1, ptr2));
+    //     uart_puts("\n");
+    //     uart_put_dec(my_strlen(ptr2));
+    //     uart_puts("\n");
+    // }
+    // else 
+    // {
+    //     uart_puts("Allocation failed!\n");
+    // }
 
     // uart_puts("=== Memory Allocator Test Start ===\n");
     // uart_puts("\n--- Test 1: Basic Allocation ---");
@@ -106,14 +111,43 @@ void kernel_main() {
     // cmemory_free(ptr10);
     // uart_puts("\n=== Memory Allocator Test End ===\n");
     
-    //virtio_blk_init();
+    virtio_blk_init();
+
+    //test virtio_blk
     // uint8_t write_buf[512];
-    // for (int i = 0; i < 512; i++) {write_buf[i] = i & 0xFF;}
+    // for (int i = 0; i < 512; i++) {write_buf[i] = i+64 & 0xFF;}
     // virtio_blk_write(0, write_buf);
     // uint8_t read_buf[512];
     // virtio_blk_read(0, read_buf);
+    // void *ptr3 = (void *)my_malloc(INPUT_BUFFER_SIZE*sizeof(char));
+    // uart_puts(my_memcpy(ptr3, (const void * )read_buf, 20));
+    // uart_puts("\n");
+    // uart_putc(read_buf[50]);
+    // uart_puts("\n");
     
+    fs_format();
+    fs_init();
+
+    uart_put_dec( fs_create("test.txt"));
+    uart_puts("\n");
+    fs_write("test.txt", test_data1, sizeof(test_data1));
+    char *ptr = (char *)cmemory_alloc(INPUT_BUFFER_SIZE*sizeof(char));
+    fs_read("test.txt", ptr, sizeof(test_data1));
+    uart_puts(ptr);
+    uart_puts("\n");
     
+    uart_put_dec( fs_create("test1.txt"));
+    uart_puts("\n");
+    fs_write("test1.txt", test_data2, sizeof(test_data2));
+    char *ptr1 = (char *)cmemory_alloc(INPUT_BUFFER_SIZE*sizeof(char));
+    fs_read("test1.txt", ptr1, sizeof(test_data2));
+    uart_puts(ptr1);
+    uart_puts("\n");
+
+    fs_list();
+    // uart_put_dec( fs_create("data.bin"));
+    // uart_puts("\n");
+
     // 导致内存泄漏
     //asm volatile(".word 0x00000000");
     // 退出内核

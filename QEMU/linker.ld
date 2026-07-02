@@ -21,7 +21,6 @@ SECTIONS
         *(.text)    
     }    
         
-        
     .rodata : ALIGN(4K) {
         *(.rodata)
         *(.rodata.*)
@@ -38,12 +37,14 @@ SECTIONS
     }
 
     . = ALIGN(4K);
+
     heap = .;
     . += 4096;
     heap_end = .;
+
     __heap_start = .;
-    
     __heap_end = ORIGIN(RAM) + LENGTH(RAM) - 128K;
+    
     . = ALIGN(16);
     __stack_top = .;
 

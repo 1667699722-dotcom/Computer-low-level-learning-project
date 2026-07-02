@@ -50,7 +50,7 @@ struct virtio_blk_req {
 };
 
 // ==================== 驱动全局变量 ====================
-#define QUEUE_SIZE 8                      // 队列的描述符数量
+#define QUEUE_SIZE 8                       // 队列的描述符数量
 static struct virtq_desc* desc;        // 描述符表指针
 static struct virtq_avail* avail;      // Available Ring 指针
 static struct virtq_used* used;        // Used Ring 指针
