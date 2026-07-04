@@ -39,7 +39,7 @@ SECTIONS
     . = ALIGN(4K);
 
     heap = .;
-    . += 4096;
+    . += 8388608;  
     heap_end = .;
 
     __heap_start = .;

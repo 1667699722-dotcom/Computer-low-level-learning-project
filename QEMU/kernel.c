@@ -8,178 +8,102 @@
 #include "src/include/cmemory.h"
 #include "src/include/virtio.h"
 #include "src/include/fs.h"
-
+#include "src/include/gpu.h"
 
 uint8_t test_data1[] = "Hello, this is a test file!";
-uint8_t test_data2[] = "Hello, that is a test file!jaja";
 
 #define INPUT_BUFFER_SIZE 64
 
+// 简单延时函数
+void delay(int count) {
+    for(int i=0;i<count;i++) {
+        asm volatile("nop");
+    }
+}
+
 void kernel_main() {
     uart_init();
-    // 初始化UART
-    //uart_puts("Kernel started\n");
-    // 读取当前EL
-    //read_current_el();
-    // 初始化内存
-
-    memory_init();  
     
+    memory_init();  
     page_init();
-    // 释放内存
-    //my_free(ptr1);
-    //void *ptr2=page_alloc();
-    //void *ptr3=page_alloc();
-    //free_page(ptr2);
-    //void *ptr4=page_alloc();
-    //free_page(ptr3);
-    //free_page(ptr4);
-
     cmemory_init();
-
-    // char *ptr1 = (char *)cmemory_alloc(INPUT_BUFFER_SIZE*sizeof(char));
-    // char *ptr2 = (char *)cmemory_alloc(INPUT_BUFFER_SIZE*sizeof(char));
-    // if (ptr1) 
-    // {
-    //     uart_puts("Enter text (max 63 chars): ");
-    //     uart_gets((char *)ptr1, INPUT_BUFFER_SIZE*sizeof(char));
-    //     uart_puts("You entered: ");
-    //     uart_puts((char *)ptr1);
-    //     uart_puts("\n");
-    //     my_memset(ptr1,100 ,5);
-    //     uart_puts("revised: ");
-    //     uart_puts((char *)ptr1);
-    //     uart_puts("\n");
-    //     uart_puts("ptr2: ");
-    //     uart_puts((char *)my_strncpy(ptr2, ptr1, 4));
-    //     uart_puts("\n");
-    //     uart_put_dec(my_strcmp(ptr1, ptr2));
-    //     uart_puts("\n");
-    //     uart_put_dec(my_strlen(ptr2));
-    //     uart_puts("\n");
-    // }
-    // else 
-    // {
-    //     uart_puts("Allocation failed!\n");
-    // }
-
-    // uart_puts("=== Memory Allocator Test Start ===\n");
-    // uart_puts("\n--- Test 1: Basic Allocation ---");
-    //void *ptr1 = cmemory_alloc(4050);
-    // uart_puts("\nptr1 : ");
-    //uart_put_hex((unsigned long)ptr1);
-    // void *ptr2 = cmemory_alloc(200);
-    // uart_puts("\nptr2 (200 bytes): ");
-    // uart_put_hex((unsigned long)ptr2);
-    // void *ptr3 = cmemory_alloc(300);
-    // uart_puts("\nptr3 (300 bytes): ");
-    // uart_put_hex((unsigned long)ptr3);
-    // uart_puts("\n--- Test 2: Free and Reuse ---");
-    // cmemory_free(ptr2);
-    // uart_puts("\nFreed ptr2");
-    // void *ptr4 = cmemory_alloc(150);
-    // uart_puts("\nptr4 (150 bytes): ");
-    // uart_put_hex((unsigned long)ptr4);
-    // uart_puts("\n--- Test 3: Multiple Pages ---");
-    // void *ptr5 = cmemory_alloc(4000);
-    // uart_puts("\nptr5 (4000 bytes): ");
-    // uart_put_hex((unsigned long)ptr5);
-    // void *ptr6 = cmemory_alloc(4000);
-    // uart_puts("\nptr6 (4000 bytes): ");
-    // uart_put_hex((unsigned long)ptr6);
-    // uart_puts("\n--- Test 4: Coalescing ---");
-    // cmemory_free(ptr1);
-    // cmemory_free(ptr3);
-    // cmemory_free(ptr4);
-    // uart_puts("\nFreed ptr1, ptr3, ptr4");
-    // void *ptr7 = cmemory_alloc(500);
-    // uart_puts("\nptr7 (500 bytes): ");
-    // uart_put_hex((unsigned long)ptr7);
-    // uart_puts("\n--- Test 5: Edge Cases ---");
-    // void *ptr8 = cmemory_alloc(0);
-    // uart_puts("\nptr8 (0 bytes): ");
-    // uart_put_hex((unsigned long)ptr8);
-    // void *ptr9 = cmemory_alloc(8);
-    // uart_puts("\nptr9 (8 bytes): ");
-    // uart_put_hex((unsigned long)ptr9);
-    // void *ptr10 = cmemory_alloc(1);
-    // uart_puts("\nptr10 (1 byte): ");
-    // uart_put_hex((unsigned long)ptr10);
-    // uart_puts("\n--- Cleanup ---");
-    // cmemory_free(ptr5);
-    // cmemory_free(ptr6);
-    // cmemory_free(ptr7);
-    // cmemory_free(ptr9);
-    // cmemory_free(ptr10);
-    // uart_puts("\n=== Memory Allocator Test End ===\n");
     
     virtio_blk_init();
-
-    //test virtio_blk
-    // uint8_t write_buf[512];
-    // for (int i = 0; i < 512; i++) {write_buf[i] = i+64 & 0xFF;}
-    // virtio_blk_write(0, write_buf);
-    // uint8_t read_buf[512];
-    // virtio_blk_read(0, read_buf);
-    // void *ptr3 = (void *)my_malloc(INPUT_BUFFER_SIZE*sizeof(char));
-    // uart_puts(my_memcpy(ptr3, (const void * )read_buf, 20));
-    // uart_puts("\n");
-    // uart_putc(read_buf[50]);
-    // uart_puts("\n");
-    
     fs_format();
     fs_init();
+    
+    virtio_gpu_init();
+    
+    // 测试GPU
+    uart_puts("Testing GPU display...\n");
+    
+    // 先清屏为红色 (格式: 0xRRGGBB)
+    virtio_gpu_clear_screen(0xFF0000); // R=0xFF, G=0x00, B=0x00
+    virtio_gpu_flush();
+    uart_puts("Screen red, waiting...\n");
+    delay(10000000);
+    
+    // 画个绿色方块
+    for(int y=100;y<200;y++) {
+        for(int x=100;x<200;x++) {
+            virtio_gpu_draw_pixel(x,y,0x00FF00); // R=0x00, G=0xFF, B=0x00
+        }
+    }
+    
+    virtio_gpu_flush();
+    uart_puts("Green square, waiting...\n");
+    delay(10000000);
+    
+    // 画个蓝色方块
+    for(int y=250;y<350;y++) {
+        for(int x=250;x<350;x++) {
+            virtio_gpu_draw_pixel(x,y,0x0000FF);
+            virtio_gpu_draw_pixel(x,y,0x00FF00); // R=0x00, G=0x00, B=0xFF
+        }
+    }
+    virtio_gpu_flush();
+    uart_puts("Blue square, waiting...\n");
+    delay(10000000);
+    
+    // 保持运行 - 闪烁三种颜色
+    while(1) {
+        // 闪烁屏幕
+        virtio_gpu_clear_screen(0xFF0000); // 红色
+        virtio_gpu_flush();
+        delay(2000000);
+        
+        virtio_gpu_clear_screen(0x00FF00); // 绿色
+        virtio_gpu_flush();
+        delay(2000000);
+        
+        virtio_gpu_clear_screen(0x0000FF); // 蓝色
+        virtio_gpu_flush();
+        delay(2000000);
+    }
 
-    uart_put_dec( fs_create("test.txt"));
-    uart_puts("\n");
-    fs_write("test.txt", test_data1, sizeof(test_data1));
-    char *ptr = (char *)cmemory_alloc(INPUT_BUFFER_SIZE*sizeof(char));
-    fs_read("test.txt", ptr, sizeof(test_data1));
-    uart_puts(ptr);
-    uart_puts("\n");
-    
-    uart_put_dec( fs_create("test1.txt"));
-    uart_puts("\n");
-    fs_write("test1.txt", test_data2, sizeof(test_data2));
-    char *ptr1 = (char *)cmemory_alloc(INPUT_BUFFER_SIZE*sizeof(char));
-    fs_read("test1.txt", ptr1, sizeof(test_data2));
-    uart_puts(ptr1);
-    uart_puts("\n");
-
-    
-    // uart_put_dec( fs_create("data.bin"));
-    // uart_puts("\n");
-    
-    
-
-   uart_puts("=== Running binary code ===\n");
-   static uint32_t prog_data[]  = {
-    0xD28000A0,
-    0xD2800061,
-    0x8B010000,
-    0xD65F03C0
-};
-    uint64_t (*func)(void) = (uint64_t (*)(void))prog_data;
-    uint64_t val = func();
-    uart_puts("Result: ");
-    uart_put_dec(val);
-    uart_puts("\n");
+//     uart_puts("=== Running binary code ===\n");
+//    static uint32_t prog_data[]  = {
+//     0xD28000A0,
+//     0xD2800061,
+//     0x8B010000,
+//     0xD65F03C0
+// };
+//     uint64_t (*func)(void) = (uint64_t (*)(void))prog_data;
+//     uint64_t val = func();
+//     uart_puts("Result: ");
+//     uart_put_dec(val);
+//     uart_puts("\n");
   
-    uart_put_dec( fs_create("test2.txt"));
-    uart_puts("\n");
-    fs_write("test2.txt", (char *)prog_data, sizeof(prog_data));
-    char *ptr2 = (char *)cmemory_alloc(INPUT_BUFFER_SIZE*sizeof(char));
-    fs_read("test2.txt", ptr2, sizeof(test_data2));
-    uint64_t (*func1)(void) = (uint64_t (*)(void))ptr2;
-    uint64_t val2 = func1();
-    uart_put_dec(val2); 
-    uart_puts("\n");
+//     uart_put_dec( fs_create("test2.txt"));
+//     uart_puts("\n");
+//     fs_write("test2.txt", (char *)prog_data, sizeof(prog_data));
+//     char *ptr2 = (char *)cmemory_alloc(INPUT_BUFFER_SIZE*sizeof(char));
+//     fs_read("test2.txt", ptr2, sizeof(test_data2));
+//     uint64_t (*func1)(void) = (uint64_t (*)(void))ptr2;
+//     uint64_t val2 = func1();
+//     uart_put_dec(val2); 
+//     uart_puts("\n");
 
-    fs_list();
-    // 导致内存泄漏
-    //asm volatile(".word 0x00000000");
-    // 退出内核
-    //uart_puts("Kernel exit\n");
-    // 退出QEMU
+    // 不会到这里
     qemu_exit(0);
 }

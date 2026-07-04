@@ -3,10 +3,10 @@
 .global memory_init
 .global memory_alloc
 .global memory_free
-.equ HEAP_SIZE,4096
+.equ HEAP_SIZE, 8388608  // 8MB
 memory_init:
     ldr x0, =heap
-    ldr x1, =4096
+    ldr x1, =8388608
     sub x1, x1, #8
     str w1, [x0]
     mov w2, #0
@@ -140,4 +140,3 @@ free_done:
     ldp x21, x22, [sp, #16]
     ldp x19, x20, [sp], #96
     ret
-
