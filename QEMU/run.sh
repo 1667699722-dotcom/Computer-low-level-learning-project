@@ -34,4 +34,17 @@ done
 # 运行：-kernel 方式，virtualization=on 让内核在 EL2 启动
 #qemu-system-aarch64 -machine virt,virtualization=on -cpu cortex-a72 -m 512M -nographic -semihosting -kernel bin/kernel.elf -drive file=disk.img,if=none,format=raw,id=hd -device virtio-blk-device,drive=hd -global virtio-mmio.force-legacy=false
 
-qemu-system-aarch64 -machine virt,virtualization=on -cpu cortex-a72 -m 512M -serial mon:stdio -display cocoa -kernel bin/kernel.elf -drive file=disk.img,if=none,format=raw,id=hd -device virtio-blk-device,drive=hd -device virtio-gpu-device -global virtio-mmio.force-legacy=false
+#qemu-system-aarch64 -machine virt,virtualization=on -cpu cortex-a72 -m 512M -serial mon:stdio -display cocoa -kernel bin/kernel.elf -drive file=disk.img,if=none,format=raw,id=hd -device virtio-blk-device,drive=hd -device virtio-gpu-device -global virtio-mmio.force-legacy=false
+
+qemu-system-aarch64 \
+  -accel hvf \
+  -machine virt \
+  -cpu host \
+  -m 512M \
+  -serial mon:stdio \
+  -display cocoa \
+  -kernel bin/kernel.elf \
+  -drive file=disk.img,if=none,format=raw,id=hd \
+  -device virtio-blk-device,drive=hd \
+  -device virtio-gpu-device \
+  -global virtio-mmio.force-legacy=false
