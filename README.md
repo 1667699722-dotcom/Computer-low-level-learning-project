@@ -29,7 +29,7 @@
 408/
 ├── CUDA/        # CUDA 并行计算 / CUDA Parallel Computing
 ├── Chip/        # Verilog 芯片设计 / Verilog Chip Design
-├── ISA/         # ARM64 汇编系统编程 / ARM64 Assembly System Programming
+├── UISlntr/         # ARM64 汇编系统编程 / ARM64 Assembly System Programming
 ├── QEMU/        # AArch64 裸机操作系统 / AArch64 Bare-metal OS
 ├── Algorithms/  # 算法导论与数据结构 / Introduction to Algorithms & Data Structures
 └── bin/         # 编译后的二进制 / Compiled Binaries
