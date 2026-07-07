@@ -1,4 +1,4 @@
-clang Leetcode/622/1.c -g -o bin/queue
+clang Leetcode/146/1.c -g -o bin/out
 #cat << 'PASS'
 
 #╔══════════════════════════════════════════╗
@@ -14,4 +14,4 @@ clang Leetcode/622/1.c -g -o bin/queue
 #║   BUILD SUCCESSFUL -    launching ...    ║
 #╚══════════════════════════════════════════╝
 #PASS
- ./bin/queue
+ ./bin/out
