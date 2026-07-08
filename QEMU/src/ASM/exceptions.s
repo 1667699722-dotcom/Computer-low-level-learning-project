@@ -2,6 +2,7 @@
 .balign 2048
 
 .global exception_vector_table
+.global exception_init
 exception_vector_table:
 
     // Current EL with SP_EL0: Synchronous
@@ -55,6 +56,12 @@ exception_vector_table:
     // Lower EL using AArch32: SError
     b exception_handler
     .space 124
+
+exception_init:
+    ldr x0, =exception_vector_table
+    msr vbar_el2, x0
+    isb
+    ret
 
 exception_handler:
     // 保存所有通用寄存器

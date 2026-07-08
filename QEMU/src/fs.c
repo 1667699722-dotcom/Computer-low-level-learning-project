@@ -96,7 +96,7 @@ static void read_root_dir(void) {
 
 void fs_format(void)
 {
-    uart_puts("Formatting filesystem... \n");
+    //uart_puts("Formatting filesystem... \n");
 
     //uart_puts("fs_format: setting superblock...\n");
     sb.magic=FS_MAGIC;
@@ -122,12 +122,12 @@ void fs_format(void)
     //uart_puts("fs_format: write_root_dir...\n");
     write_root_dir();
 
-    uart_puts("Filesystem formatted!\n");
+    //uart_puts("Filesystem formatted!\n");
     fs_initialized = 1;
 }
 
 void fs_init(void) {
-    uart_puts("Initializing filesystem...\n");
+    //uart_puts("Initializing filesystem...\n");
     
     read_superblock();
     
@@ -138,7 +138,7 @@ void fs_init(void) {
         read_bitmap();
         read_root_dir();
         fs_initialized = 1;
-        uart_puts("Filesystem mounted!\n");
+        //uart_puts("Filesystem mounted!\n");
     }
 }
 

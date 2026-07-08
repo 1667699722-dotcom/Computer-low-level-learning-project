@@ -133,7 +133,7 @@ void virtio_blk_init(void)
         return;
     }
 
-    uart_puts("virtio-blk: device found\n"); 
+    //uart_puts("virtio-blk: device found\n"); 
     
     // 1. 复位+基础状态
     VIRTIO_REG(VIRTIO_MMIO_STATUS) = 0;
@@ -142,13 +142,13 @@ void virtio_blk_init(void)
 
     // 2. 读取设备全部特性（低 + 高）
     VIRTIO_REG(VIRTIO_MMIO_DEVICE_FEATURES_SEL) = 0;  // 选低 32 位
-    uint32_t dev_feat_low = VIRTIO_REG(VIRTIO_MMIO_DEVICE_FEATURES);
+    //uint32_t dev_feat_low = VIRTIO_REG(VIRTIO_MMIO_DEVICE_FEATURES);
 
     VIRTIO_REG(VIRTIO_MMIO_DEVICE_FEATURES_SEL) = 1;  // 选高 32 位
     uint32_t dev_feat_high = VIRTIO_REG(VIRTIO_MMIO_DEVICE_FEATURES);
 
-    uart_puts("dev feat low: 0x"); uart_put_hex(dev_feat_low); uart_puts("\n");
-    uart_puts("dev feat high: 0x"); uart_put_hex(dev_feat_high); uart_puts("\n");
+    //uart_puts("dev feat low: 0x"); uart_put_hex(dev_feat_low); uart_puts("\n");
+    //uart_puts("dev feat high: 0x"); uart_put_hex(dev_feat_high); uart_puts("\n");
 
     #define VIRTIO_F_VERSION_1 32
     // 检查 VERSION_1 在高 32 位的 bit 0
@@ -201,7 +201,7 @@ void virtio_blk_init(void)
     VIRTIO_REG(VIRTIO_MMIO_QUEUE_READY) = 1;
 
     VIRTIO_REG(VIRTIO_MMIO_STATUS) = VIRTIO_CONFIG_S_ACKNOWLEDGE | VIRTIO_CONFIG_S_DRIVER | VIRTIO_CONFIG_S_FEATURES_OK | VIRTIO_CONFIG_S_DRIVER_OK;
-    uart_puts("virtio-blk: initialized successfully\n");
+    //uart_puts("virtio-blk: initialized successfully\n");
 }
 
 int virtio_blk_read(uint64_t sector, void* buffer) {
