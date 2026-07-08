@@ -13,6 +13,7 @@
 #include "src_1/include/testfs.h"
 #include "src_1/include/testgpu.h"
 #include "src/include/GIC.h"
+#include "src/include/time.h"
 
 uint8_t test_data1[] = "Hello, this is a test file!";
 #define INPUT_BUFFER_SIZE 64
@@ -25,7 +26,6 @@ static inline void wfe(void)
 }
 
 void kernel_main() {
-    
     exception_init();
     memory_init();  
     page_init();
@@ -33,26 +33,29 @@ void kernel_main() {
     virtio_blk_init();
     fs_format();
     fs_init();
-    gic_init();
-    //virtio_gpu_init();
-    spinlock_init(&test_lock);
+    
     uart_init();
- 
+   
+
+    spinlock_init(&test_lock);
+
     spinlock_acquire(&test_lock);
     uart_puts("CPU0 is running!\n");
     spinlock_release(&test_lock);
 
-
-    // 不会到这里
+    while (1) {
+        wfe();
+    }
     qemu_exit(0);
 }
 
-
 void kernel_main_cpu1(void) {
-
+    exception_init();
+    
     spinlock_acquire(&test_lock);
     uart_puts("CPU1 is running!\n");
     spinlock_release(&test_lock);
+
 
     while (1) {
         wfe();
@@ -60,6 +63,7 @@ void kernel_main_cpu1(void) {
 }
 
 void kernel_main_cpu2(void) {
+    exception_init();
 
     spinlock_acquire(&test_lock);
     uart_puts("CPU2 is running!\n");
@@ -71,7 +75,8 @@ void kernel_main_cpu2(void) {
 }
 
 void kernel_main_cpu3(void) {
-
+    exception_init();
+    
     spinlock_acquire(&test_lock);
     uart_puts("CPU3 is running!\n");
     spinlock_release(&test_lock);
@@ -79,4 +84,5 @@ void kernel_main_cpu3(void) {
     while (1) {
         wfe();
     }
+
 }

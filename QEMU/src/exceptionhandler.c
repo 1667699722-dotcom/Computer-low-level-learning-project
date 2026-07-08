@@ -1,7 +1,8 @@
 #include "include/uart.h"
 #include "include/exceptionhandler.h"
 #include "include/lib.h"
-
+#include "include/GIC.h"
+#include "include/time.h"
 // ESR_EL2 的 EC 字段（bit[31:26]）表示异常类别
 #define ESR_EC_SHIFT        26
 #define ESR_EC_MASK         (0x3F << ESR_EC_SHIFT)
@@ -74,7 +75,9 @@ static const char *get_ec_name(unsigned int ec) {
     }
 }
 
+
 int c_exception_handler(unsigned long esr, unsigned long elr, unsigned long far) {
+
     unsigned int ec = (unsigned int)((esr & ESR_EC_MASK) >> ESR_EC_SHIFT);
     
     uart_puts("\n=== Exception ===\n");
@@ -93,6 +96,9 @@ int c_exception_handler(unsigned long esr, unsigned long elr, unsigned long far)
     uart_put_hex(ec);
     uart_puts(")\n");
     uart_puts("=================\n\n");
+
+
+
     
     // 同步异常需要跳过触发指令（返回1表示需要跳过）
     // 包括：未定义指令、数据中止、指令中止、SVC、HVC、SMC、系统寄存器访问等
