@@ -35,13 +35,13 @@ void kernel_main() {
     fs_init();
     gic_init();
     //virtio_gpu_init();
-    uart_init();
     spinlock_init(&test_lock);
-
+    uart_init();
+ 
     spinlock_acquire(&test_lock);
-    uart_puts("hello\n");
-    //testfs1();
+    uart_puts("CPU0 is running!\n");
     spinlock_release(&test_lock);
+
 
     // 不会到这里
     qemu_exit(0);
@@ -49,8 +49,32 @@ void kernel_main() {
 
 
 void kernel_main_cpu1(void) {
-    
+
+    spinlock_acquire(&test_lock);
     uart_puts("CPU1 is running!\n");
+    spinlock_release(&test_lock);
+
+    while (1) {
+        wfe();
+    }
+}
+
+void kernel_main_cpu2(void) {
+
+    spinlock_acquire(&test_lock);
+    uart_puts("CPU2 is running!\n");
+    spinlock_release(&test_lock);
+
+    while (1) {
+        wfe();
+    }
+}
+
+void kernel_main_cpu3(void) {
+
+    spinlock_acquire(&test_lock);
+    uart_puts("CPU3 is running!\n");
+    spinlock_release(&test_lock);
 
     while (1) {
         wfe();

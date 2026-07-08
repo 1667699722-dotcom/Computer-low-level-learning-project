@@ -50,6 +50,10 @@ SECTIONS
     . += 32768;   
     __stack_top_cpu1 = .;
     . += 32768;   
+    __stack_top_cpu2 = .;
+    . += 32768; 
+    __stack_top_cpu3 = .;
+    . += 32768; 
 
     __vheap_start = 0x50000000;
     __vheap_end = 0x58000000;

@@ -42,4 +42,22 @@ void gic_init(void) {
     
     // 使能 GICC
     gicc2[GICC_CTLR / 4] = 0x03;
+
+    // 2. 初始化 GICC (CPU Interface)
+    uint32_t *gicc3 = (uint32_t *)0x08030000;
+    
+    // 设置优先级掩码（0xFF 表示所有优先级都接受）
+    gicc3[GICC_PMR / 4] = 0xFF;
+    
+    // 使能 GICC
+    gicc3[GICC_CTLR / 4] = 0x03;
+
+    // 2. 初始化 GICC (CPU Interface)
+    uint32_t *gicc4 = (uint32_t *)0x08040000;
+    
+    // 设置优先级掩码（0xFF 表示所有优先级都接受）
+    gicc4[GICC_PMR / 4] = 0xFF;
+    
+    // 使能 GICC
+    gicc4[GICC_CTLR / 4] = 0x03;
 }
