@@ -12,37 +12,47 @@
 #include "src/include/spinlock.h"
 #include "src_1/include/testfs.h"
 #include "src_1/include/testgpu.h"
+#include "src/include/GIC.h"
 
 uint8_t test_data1[] = "Hello, this is a test file!";
-
 #define INPUT_BUFFER_SIZE 64
-
 spinlock_t test_lock;
-
 int shared_counter = 0;
 
-// 简单延时函数
-
+static inline void wfe(void)
+{
+    asm volatile("wfe");
+}
 
 void kernel_main() {
+    
     exception_init();
-    uart_init();
     memory_init();  
     page_init();
     cmemory_init();
     virtio_blk_init();
     fs_format();
     fs_init();
+    gic_init();
     //virtio_gpu_init();
-
+    uart_init();
     spinlock_init(&test_lock);
 
     spinlock_acquire(&test_lock);
-
     uart_puts("hello\n");
-    testfs1();
+    //testfs1();
     spinlock_release(&test_lock);
 
     // 不会到这里
     qemu_exit(0);
+}
+
+
+void kernel_main_cpu1(void) {
+    
+    uart_puts("CPU1 is running!\n");
+
+    while (1) {
+        wfe();
+    }
 }

@@ -47,6 +47,9 @@ SECTIONS
     
     . = ALIGN(16);
     __stack_top = .;
+    . += 32768;   
+    __stack_top_cpu1 = .;
+    . += 32768;   
 
     __vheap_start = 0x50000000;
     __vheap_end = 0x58000000;
