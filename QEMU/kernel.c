@@ -25,7 +25,23 @@ static inline void wfe(void)
     asm volatile("wfe");
 }
 
-void kernel_main() {
+void delay1(uint64_t cycles)
+{
+    for (volatile uint64_t i = 0; i < cycles; i++) {
+        // 空循环，消耗时间
+    }
+}
+
+void kernel_main(void) {
+    
+    while (1) {
+        wfe();
+    }
+
+}
+
+
+void kernel_main_cpu1() {
     exception_init();
     memory_init();  
     page_init();
@@ -33,41 +49,41 @@ void kernel_main() {
     virtio_blk_init();
     fs_format();
     fs_init();
-    
     uart_init();
    
-
     spinlock_init(&test_lock);
-
-    spinlock_acquire(&test_lock);
-    uart_puts("CPU0 is running!\n");
-    spinlock_release(&test_lock);
-
-    while (1) {
-        wfe();
-    }
-    qemu_exit(0);
-}
-
-void kernel_main_cpu1(void) {
-    exception_init();
-    
     spinlock_acquire(&test_lock);
     uart_puts("CPU1 is running!\n");
     spinlock_release(&test_lock);
+    
+    
+    readCNTHP_CTL_EL2();
+    cnthp_set_period(10000);
+    cnthp_start_irq();
+    readCNTHP_CTL_EL2();
+    delay1(1000000);
+    readCNTHP_CTL_EL2();
+    
+    
+    cnthp_set_period(10000);
+    readCNTHP_CTL_EL2();
+    cnthp_start_irq();
+    readCNTHP_CTL_EL2();
+    delay1(1000000);
+    readCNTHP_CTL_EL2();
+    
+    cnthp_stop();
+    readCNTHP_CTL_EL2();
 
+    
+ 
 
-    while (1) {
-        wfe();
-    }
+    qemu_exit(0);
 }
 
-void kernel_main_cpu2(void) {
-    exception_init();
 
-    spinlock_acquire(&test_lock);
-    uart_puts("CPU2 is running!\n");
-    spinlock_release(&test_lock);
+
+void kernel_main_cpu2(void) {
 
     while (1) {
         wfe();
@@ -75,11 +91,7 @@ void kernel_main_cpu2(void) {
 }
 
 void kernel_main_cpu3(void) {
-    exception_init();
-    
-    spinlock_acquire(&test_lock);
-    uart_puts("CPU3 is running!\n");
-    spinlock_release(&test_lock);
+
 
     while (1) {
         wfe();
