@@ -29,9 +29,11 @@
 408/
 ├── CUDA/        # CUDA 并行计算 / CUDA Parallel Computing
 ├── Chip/        # Verilog 芯片设计 / Verilog Chip Design
-├── UISlntr/         # ARM64 汇编系统编程 / ARM64 Assembly System Programming
+├── UISIntr/     # ARM64 汇编系统编程 / ARM64 Assembly System Programming
 ├── QEMU/        # AArch64 裸机操作系统 / AArch64 Bare-metal OS
+├── PCB_TCB/     # 用户态多任务模拟器 / User-space Multi-task Simulator
 ├── Algorithms/  # 算法导论与数据结构 / Introduction to Algorithms & Data Structures
+├── journal/     # 每日开发日志 / Daily Development Logs
 └── bin/         # 编译后的二进制 / Compiled Binaries
 ```
 
@@ -63,30 +65,52 @@ System-level programming in ARM64 assembly on macOS, including memory management
 **English:**
 Develop a full AArch64 bare-metal OS on QEMU-emulated virt machine, learning full-stack low-level technologies from boot sequence, driver development, file system to display output.
 
+**状态 / Status:**
+⏸️ 挂起 - 定时器中断卡住，暂时转向用户态模拟器
+
 **已完成 / Completed:**
 
 - ✅ 工具链与启动：clang+ld.lld 裸机编译、`_start` 入口、BSS 清零、ELF 镜像生成
-- ✅ UART 驱动：完整的输入输出（`uart_puts`/`uart_gets`/`uart_put_hex`）
-- ✅ 内存管理：链表内存分配器、页分配器、堆管理
-- ✅ 异常处理：异常向量表、同步/异步异常处理框架
-- ✅ Virtio 设备驱动：virtio-blk（块设备）、virtio-gpu（GPU）
-- ✅ 文件系统：简单的文件系统实现、文件创建/读写
-- ✅ GPU 显示：B8G8R8A8_UNORM 像素格式、清屏/画点、全屏刷新
-- ✅ 系统引导流程：完整的 virtio-gpu 初始化与资源管理
+- ✅ UART 驱动：完整的输入输出（`uart_puts`/`uart_gets`/`uart_getc`）
+- ✅ 内存管理：链表内存分配器、支持块分割/合并、4字节对齐
 
-**进行中 / In Progress:**
-- 🔧 多内核引导加载器：支持加载不同内核（包括 Linux）
-- 🔧 AArch64 Linux Boot Protocol 支持
-- 🔧 设备树 Blob（DTB）处理
+**卡住的问题 / Blocked:**
+- CNTHP_EL2 定时器中断无法触发
+- GIC 初始化问题
 
 **后续 / Next:**
+- 异常处理与中断
 - 调度器与多线程
 - MMU 与虚拟内存
-- 网络栈与 virtio-net
+
+**详细进度 / Detailed Progress:** [QEMU/schedule.md](./QEMU/schedule.md)
 
 ***
 
-## 3. 芯片设计 (Chip/) / Chip Design (Chip/)
+## 3. 用户态多任务模拟器 (PCB_TCB/) / User-space Multi-task Simulator (PCB_TCB/)
+
+**中文：**
+基于 Linux 用户态标准 C 库，使用 ucontext 实现独立栈与上下文切换，搭配 timerfd 模拟硬件时钟中断，手动模拟 PCB/TCB 任务控制块、时间片轮转调度；结合 fork 区分进程与线程资源隔离模型，先吃透操作系统多任务软件模型，再扩展到裸机底层实现。
+
+**English:**
+Based on Linux user-space standard C library, use ucontext for independent stack and context switching, timerfd for simulated hardware clock interrupts, manually implement PCB/TCB task control blocks and time-slice round-robin scheduling; combine fork to distinguish process and thread resource isolation models. Master OS multi-tasking software model first, then expand to bare-metal implementation.
+
+**状态 / Status:**
+🚀 进行中 - 项目规划完成，准备开始实现
+
+**计划 / Plan:**
+- 任务控制块模块（模拟 PCB/TCB）
+- 任务创建模块（独立栈、ucontext）
+- 时钟中断模拟模块（timerfd）
+- 轮转调度器模块
+- 任务状态管理
+- 进程对比拓展模块（fork）
+
+**详细规划 / Detailed Plan:** [PCB_TCB/spc.md](./PCB_TCB/spc.md)
+
+***
+
+## 4. 芯片设计 (Chip/) / Chip Design (Chip/)
 
 **中文：**
 用 Verilog 实现数字电路模块，学习数字逻辑与自制 CPU 设计。
@@ -104,7 +128,7 @@ Implement digital circuit modules in Verilog, learning digital logic and custom 
 
 ***
 
-## 4. 算法导论与数据结构 (Algorithms/) / Introduction to Algorithms & Data Structures (Algorithms/)
+## 5. 算法导论与数据结构 (Algorithms/) / Introduction to Algorithms & Data Structures (Algorithms/)
 
 **中文：**
 《算法导论》的 C 语言完整实现，以及经典数据结构与算法题解。
@@ -121,13 +145,25 @@ Complete C implementation of "Introduction to Algorithms", and classic data stru
 
 ***
 
-## 5. CUDA 并行计算 (CUDA/) / CUDA Parallel Computing (CUDA/)
+## 6. CUDA 并行计算 (CUDA/) / CUDA Parallel Computing (CUDA/)
 
 **中文：**
 学习 CUDA 并行编程，包括 GPU 架构、核函数编写、内存管理等。
 
 **English:**
 Learning CUDA parallel programming, including GPU architecture, kernel writing, memory management, etc.
+
+***
+
+## 7. 每日开发日志 (journal/) / Daily Development Logs (journal/)
+
+**中文：**
+记录每日开发进度、问题和思考，按日期组织。
+
+**English:**
+Record daily development progress, issues and thoughts, organized by date.
+
+**查看日志 / View Logs:** [journal/README.md](./journal/README.md)
 
 
 
