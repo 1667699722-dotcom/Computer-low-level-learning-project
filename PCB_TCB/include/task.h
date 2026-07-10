@@ -3,7 +3,7 @@
 #include <ucontext.h>
 #include <stdlib.h>
 
-typedef struct Task {
+typedef struct Task{
     ucontext_t ctx;
     char* stack;
     int id;
