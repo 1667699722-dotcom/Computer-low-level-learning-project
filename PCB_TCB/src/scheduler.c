@@ -1,10 +1,9 @@
 #include "./../include/task.h"
 #include <stdio.h>
 
+Task *current_task = NULL;
+Task *ready_queue = NULL;
 volatile int need_resched = 0;
-
-extern Task *current_task;
-extern Task *ready_queue;
 
 void scheduler_init()
 {
@@ -31,6 +30,7 @@ void schedule()
     {
         task_swap(old_task, next_task);
     }
+    printf("%s",(char *)old_task);
 }
 
 void task_yield() {
@@ -39,6 +39,7 @@ void task_yield() {
 
 void check_preempt() {
     if (need_resched) {
+        
         need_resched = 0;
         schedule();
     }

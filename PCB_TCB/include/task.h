@@ -1,3 +1,5 @@
+#ifndef TASK_H
+#define TASK_H
 
 #define _XOPEN_SOURCE 700
 #include <ucontext.h>
@@ -25,5 +27,6 @@ void task_swap(Task *old_t, Task *new_t);
 void task_enqueue(Task **queue,Task *task);
 Task* task_dequeue(Task **queue);
 
+#endif
 
 

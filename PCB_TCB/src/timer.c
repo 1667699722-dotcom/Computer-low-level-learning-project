@@ -1,11 +1,19 @@
 #include <stdio.h>
 #include <signal.h>
 #include <sys/time.h>
-// 通用信号处理函数
+#include "./../include/task.h"
+#include "./../include/scheduler.h"
+//
+extern volatile int need_resched;
+extern Task *current_task;
+#define DEFAULT_TIME_SLICE 10
+
 static void common_handler(int sig) {
     switch (sig) {
         case SIGALRM:
-            printf("定时器中断!\n");
+            // 先设置标志，再检查并调度
+            need_resched = 1;
+            check_preempt();
             break;
         case SIGUSR1:
             printf("用户信号1触发!\n");
@@ -13,7 +21,7 @@ static void common_handler(int sig) {
         default:
             printf("未知信号: %d\n", sig);
     }
-    fflush(stdout);
+    //fflush(stdout);
 }
 // 启动定时器
 void timerstart(void)
@@ -62,7 +70,3 @@ void busy_sleep(int ms) {
         }
     }
 }
-
-
-
-
