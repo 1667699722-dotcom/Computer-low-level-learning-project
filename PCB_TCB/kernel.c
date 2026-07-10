@@ -3,56 +3,67 @@
 #include "include/timer.h"
 #include <time.h>
 #include "include/task.h"
-#include <signal.h>
+#include "include/scheduler.h"
 
-static Task taskA, taskB;
-static ucontext_t main_ctx; 
 
-// 任务A运行函数
+Task taskA;
+Task taskB;
+Task taskC;
+ucontext_t main_ctx;
+
+Task *current_task;
+Task *ready_queue;
+
 void taskA_func() {
-        printf("任务A运行...\n");
-        task_swap(&taskA, &taskB);
-        printf("任务A运行结束\n");
-        task_swap(&taskA, &taskB);
-        swapcontext(&taskA.ctx,&main_ctx);
+    for (int i = 0; i < 5; i++) {
+        printf("任务A运行 - 第 %d 次\n", i+1);
+        task_yield();
+    }
+    printf("任务A结束\n");
+    swapcontext(&taskA.ctx, &main_ctx);
 }
-// 任务B运行函数
+
 void taskB_func() {
-        printf("任务B运行...\n");
-        task_swap(&taskB, &taskA);
-        printf("任务B运行结束\n");
-        task_swap(&taskB, &taskA);
+    for (int i = 0; i < 5; i++) {
+        printf("任务B运行 - 第 %d 次\n", i+1);
+        task_yield();
+    }
+    printf("任务B结束\n");
 }
-// 测试任务切换
-void testtask(void)
-{
-    printf("开始创建任务\n");
-    
+
+void taskC_func() {
+    for (int i = 0; i < 5; i++) {
+        printf("任务C运行 - 第 %d 次\n", i+1);
+        task_yield();
+    }
+    printf("任务C结束\n");
+}
+
+void test_nonpreempt() {
+    printf("=== 非抢占式调度测试开始 ===\n");
+    scheduler_init();
+
     task_create(&taskA, taskA_func, 1);
     task_create(&taskB, taskB_func, 2);
-    
-    printf("开始切换任务\n");
-    swapcontext(&main_ctx, &taskA.ctx);
-    printf("任务结束\n");
+    task_create(&taskC, taskC_func, 3);
+
+    taskA.state=running;
+    taskB.state=running;
+    taskC.state=running;
+
+    task_enqueue(&ready_queue, &taskA);
+    task_enqueue(&ready_queue, &taskB);
+    task_enqueue(&ready_queue, &taskC);
+
+    ready_queue=&taskA;
+    current_task = task_dequeue(&ready_queue);
+    current_task->state = running;
+    swapcontext(&main_ctx, &current_task->ctx);  
+printf ("任务结束 \n");
 }
-// 测试定时器
-void testtimer(void)
-{
- printf("定时器启动\n");
-    reg_usr1();
-    timerstart();
-    busy_sleep(50);
-    printf("定时器关闭\n");
-    timerstop();
-    kill(getpid(), SIGUSR1);
-    // 再等1秒，看看有没有中断
-    busy_sleep(2500);
-    kill(getpid(), SIGUSR1);
-    printf("程序结束\n");   
-}
-// 主函数
+
 int main()
 {
-    testtask();
+    test_nonpreempt();
     return 0;
 }
