@@ -39,7 +39,7 @@
 
 ***
 
-## 1. ARM64 汇编系统编程 (ISA/) / ARM64 Assembly System Programming (ISA/)
+## 1. ARM64 汇编系统编程 (UISIntr/) / ARM64 Assembly System Programming (UISIntr/)
 
 **中文：**
 在 macOS 上用 ARM64 汇编实现系统级编程，包括内存管理、系统调用、自定义指令解析器等。
@@ -72,14 +72,16 @@ Develop a full AArch64 bare-metal OS on QEMU-emulated virt machine, learning ful
 
 - ✅ 工具链与启动：clang+ld.lld 裸机编译、`_start` 入口、BSS 清零、ELF 镜像生成
 - ✅ UART 驱动：完整的输入输出（`uart_puts`/`uart_gets`/`uart_getc`）
-- ✅ 内存管理：链表内存分配器、支持块分割/合并、4字节对齐
+- ✅ 内存管理：链表内存分配器（cmemory.c）、支持块分割/合并、4字节对齐、页分配器（page.c）
+- ✅ 异常处理：异常向量表、异常处理框架（exceptionhandler.c）、ESR 解析
+- ✅ Virtio 设备驱动：virtio-blk（块设备）、virtio-gpu（GPU）（virtio.c）
+- ✅ 文件系统：简单文件系统实现、文件创建/读写（fs.c）
+- ✅ GPU 显示：B8G8R8A8_UNORM 像素格式、清屏/画点、全屏刷新（gpu.c）
 
 **卡住的问题 / Blocked:**
 - CNTHP_EL2 定时器中断无法触发
-- GIC 初始化问题
-
+- GIC 驱动：GICv2 中断控制器初始化（GIC.c）
 **后续 / Next:**
-- 异常处理与中断
 - 调度器与多线程
 - MMU 与虚拟内存
 
