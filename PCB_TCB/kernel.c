@@ -2,23 +2,35 @@
 #include <unistd.h>
 #include "include/timer.h"
 #include <time.h>
-#include <signal.h>
+#include "include/task.h"
 
+Task taskA, taskB;
+static ucontext_t main_ctx; 
+
+void taskA_func() {
+        printf("任务A运行...\n");
+        task_swap(&taskA, &taskB);
+        printf("任务A运行结束\n");
+        task_swap(&taskA, &taskB);
+        swapcontext(&taskA.ctx,&main_ctx);
+}
+
+void taskB_func() {
+        printf("任务B运行...\n");
+        task_swap(&taskB, &taskA);
+        printf("任务B运行结束\n");
+        task_swap(&taskB, &taskA);
+}
 int main()
 {
-    printf("定时器启动\n");
-    reg_usr1();
-
-    timerstart();
-    busy_sleep(50);
-    printf("定时器关闭\n");
-    timerstop();
+    printf("开始创建任务\n");
     
-    kill(getpid(), SIGUSR1);
-    // 再等1秒，看看有没有中断
-    busy_sleep(2500);
-    kill(getpid(), SIGUSR1);
-    printf("程序结束\n");
+    task_create(&taskA, taskA_func, 1);
+    task_create(&taskB, taskB_func, 2);
+    
+    printf("开始切换任务\n");
+    swapcontext(&main_ctx, &taskA.ctx);
+    printf("任务结束\n");
     
     return 0;
 }
