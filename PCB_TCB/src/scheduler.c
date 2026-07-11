@@ -4,7 +4,7 @@
 Task *current_task = NULL;
 Task *ready_queue = NULL;
 volatile int need_resched = 0;
-
+extern ucontext_t main_ctx;
 void scheduler_init()
 {
     current_task=NULL;
@@ -22,6 +22,7 @@ void schedule()
     if(next_task==NULL)
     {
         printf("error:no ready task to schedule\n");
+        swapcontext(&old_task->ctx, &main_ctx);
         return;
     }
     next_task->state=running;

@@ -10,21 +10,24 @@ Task taskE;
 ucontext_t main_ctx;
 
 void taskD_func(){
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 12; i++) {
         printf("任务D运行 - 第 %d 次\n", i+1);
         busy_sleep(200);
     }
     printf("任务D结束\n");
-    swapcontext(&taskD.ctx, &main_ctx);
+    taskD.state=blocked;
+    task_yield();
 }
 
 void taskE_func() {
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 6; i++) {
         printf("任务E运行 - 第 %d 次\n", i+1);
         busy_sleep(200);
     }
     printf("任务E结束\n");
-    swapcontext(&taskE.ctx, &main_ctx);
+    taskE.state=blocked;
+    task_yield();
+    //swapcontext(&taskE.ctx, &main_ctx);
 }
 
 void test_preempt() {
