@@ -1,0 +1,1 @@
+void buf_put(char c);
