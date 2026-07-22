@@ -1,4 +1,4 @@
-clang Leetcode/146/1.c -g -o bin/out
+clang src/Tree/1.c -g -o bin/out
 #cat << 'PASS'
 
 #╔══════════════════════════════════════════╗
