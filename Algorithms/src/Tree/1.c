@@ -32,7 +32,7 @@ BiTree buildTestTree()
     return root;
 }
 
-
+// 前序遍历：根 → 左 → 右
 void preOrder(BiTree root)
 {
     if (root == NULL) return;
@@ -40,7 +40,7 @@ void preOrder(BiTree root)
     preOrder(root->lchild);          // 递归左子树
     preOrder(root->rchild);          // 递归右子树
 }
-
+// 中序遍历：左 → 根 → 右
 void inOrder(BiTree root)
 {
     if (root == NULL) return;
@@ -48,7 +48,7 @@ void inOrder(BiTree root)
     printf("%d ", *(root->data));   // 访问根节点
     inOrder(root->rchild);           // 递归右子树
 }
-
+// 后序遍历：左 → 右 → 根
 void postOrder(BiTree root)
 {
     if (root == NULL) return;
